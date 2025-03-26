@@ -9,27 +9,31 @@ void CaptureWindow::paintEvent(QPaintEvent *event)
     QWidget::paintEvent(event);
     QPainter painter {this};
     painter.drawPixmap(0, 0, background);
-    painter.fillRect(rect(), QColor(0, 0, 0, 80));
+//    painter.fillRect(rect(), QColor(0, 0, 0, 80));
 }
 
 void CaptureWindow::mousePressEvent(QMouseEvent *event)
 {
-    std::printf("mousePress\n");
-    origin = event->pos();
-    rubberBand->setGeometry(QRect {origin, QSize {}});
-    rubberBand->show();
+    if (state == BeforeSelection) {
+        origin = event->pos();
+        rubberBand->setGeometry(QRect {origin, QSize {}});
+        rubberBand->show();
+        state = Selecting;
+    }
 }
 
 void CaptureWindow::mouseMoveEvent(QMouseEvent *event)
 {
-    std::printf("mouseMove\n");
     QPoint eventPos {event->pos()};
-    rubberBand->setGeometry(QRect {origin, eventPos}.normalized());
+    if (state == Selecting) {
+        rubberBand->setGeometry(QRect {origin, eventPos}.normalized());
+    }
 }
 
 void CaptureWindow::mouseReleaseEvent(QMouseEvent *event)
 {
-    std::printf("mouseRelease\n");
+    if (state == Selecting)
+        state = SelectionDone;
 }
 
 CaptureWindow::CaptureWindow(QPixmap &&background, QWidget *parent)
