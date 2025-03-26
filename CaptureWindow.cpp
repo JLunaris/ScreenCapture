@@ -15,22 +15,16 @@ void CaptureWindow::paintEvent(QPaintEvent *event)
 void CaptureWindow::mousePressEvent(QMouseEvent *event)
 {
     std::printf("mousePress\n");
-    QPoint pos {event->pos()};
-    if (rubberBandRect.isNull()) {
-        rubberBandRect.setTopLeft(pos);
-        rubberBand->setGeometry(rubberBandRect);
-        rubberBand->show();
-    }
+    origin = event->pos();
+    rubberBand->setGeometry(QRect {origin, QSize {}});
+    rubberBand->show();
 }
 
 void CaptureWindow::mouseMoveEvent(QMouseEvent *event)
 {
     std::printf("mouseMove\n");
-    if(true){
-        QPoint pos {event->pos()};
-//        rubberBandRect->set
-    }
-
+    QPoint eventPos {event->pos()};
+    rubberBand->setGeometry(QRect {origin, eventPos}.normalized());
 }
 
 void CaptureWindow::mouseReleaseEvent(QMouseEvent *event)
@@ -41,5 +35,5 @@ void CaptureWindow::mouseReleaseEvent(QMouseEvent *event)
 CaptureWindow::CaptureWindow(QPixmap &&background, QWidget *parent)
         : background(std::move(background)), QWidget(parent, Qt::FramelessWindowHint)
 {
-
+    rubberBand->setGeometry(QRect {});
 }

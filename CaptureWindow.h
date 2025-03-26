@@ -9,7 +9,7 @@ class CaptureWindow : public QWidget
 {
     QPixmap background;
     QRubberBand *rubberBand {new QRubberBand {QRubberBand::Rectangle, this}};
-    QRect rubberBandRect;
+    QPoint origin;
 
 protected:
     void paintEvent(QPaintEvent *event) override;
