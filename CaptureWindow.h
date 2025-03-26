@@ -9,8 +9,9 @@ class CaptureWindow : public QWidget
 
 protected:
     void paintEvent(QPaintEvent *event) override;
+    void mousePressEvent(QMouseEvent *event) override;
 
 public:
-    explicit CaptureWindow(QPixmap &&background,QWidget *parent = nullptr);
+    explicit CaptureWindow(QPixmap &&background, QWidget *parent = nullptr);
 };
 

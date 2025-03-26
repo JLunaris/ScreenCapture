@@ -9,9 +9,14 @@ void CaptureWindow::paintEvent(QPaintEvent *event)
     painter.fillRect(rect(), QColor(0, 0, 0, 80));
 }
 
-CaptureWindow::CaptureWindow(QPixmap &&background, QWidget *parent)
-        : background(std::move(background)), QWidget(parent)
+void CaptureWindow::mousePressEvent(QMouseEvent *event)
 {
-    setWindowFlag(Qt::FramelessWindowHint);
+
+}
+
+CaptureWindow::CaptureWindow(QPixmap &&background, QWidget *parent)
+        : background(std::move(background)), QWidget(parent, Qt::FramelessWindowHint)
+{
+
 
 }
