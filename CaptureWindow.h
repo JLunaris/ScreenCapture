@@ -11,6 +11,6 @@ protected:
     void paintEvent(QPaintEvent *event) override;
 
 public:
-    explicit CaptureWindow(QPixmap &background,QWidget *parent = nullptr);
+    explicit CaptureWindow(QPixmap &&background,QWidget *parent = nullptr);
 };
 
