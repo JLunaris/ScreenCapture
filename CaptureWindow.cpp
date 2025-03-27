@@ -37,17 +37,52 @@ void CaptureWindow::mouseMoveEvent(QMouseEvent *event)
     } else if (state == MovingSelection) {
         int deltaX {eventPos.x() - lastPos.x()};
         int deltaY {eventPos.y() - lastPos.y()};
-        QRect newRect {rubberBand->geometry()};
-        QRect screenRect {QApplication::primaryScreen()->geometry()};
 
-        if (screenRect.contains(newRect.translated(deltaX, 0))) {
-            newRect.translate(deltaX, 0);
+        QRect screenRect {QApplication::primaryScreen()->geometry()};
+        const QRect &bandRect {rubberBand->geometry()};
+        QRect newBandRect {bandRect};
+
+        if (deltaY < 0) { // 向上移动
+            int screenTop {screenRect.top()};
+            int bandTop {bandRect.top()};
+            if (bandTop + deltaY >= screenTop) { // 更新后未越界
+                newBandRect.translate(0, deltaY);
+                lastPos.ry() = eventPos.y();
+            } else { // 更新后越界
+                newBandRect.moveTop(screenTop);
+            }
+        } else if (deltaY > 0) { // 向下移动
+            int screenBottom {screenRect.bottom()};
+            int bandBottom {bandRect.bottom()};
+            if (bandBottom + deltaY <= screenBottom) { // 更新后未越界
+                newBandRect.translate(0, deltaY);
+                lastPos.ry() = eventPos.y();
+            } else { // 更新后越界
+                newBandRect.moveBottom(screenBottom);
+            }
         }
-        if (screenRect.contains(newRect.translated(0, deltaY))) {
-            newRect.translate(0, deltaY);
+
+        if (deltaX < 0) { // 向左移动
+            int screenLeft {screenRect.left()};
+            int bandLeft {bandRect.left()};
+            if (bandLeft + deltaX >= screenLeft) { // 更新后未越界
+                newBandRect.translate(deltaX, 0);
+                lastPos.rx() = eventPos.x();
+            } else { // 更新后越界
+                newBandRect.moveLeft(screenLeft);
+            }
+        } else if (deltaX > 0) { // 向右移动
+            int screenRight {screenRect.right()};
+            int bandRight {bandRect.right()};
+            if (bandRight + deltaX <= screenRight) { // 更新后未越界
+                newBandRect.translate(deltaX, 0);
+                lastPos.rx() = eventPos.x();
+            } else { // 更新后越界
+                newBandRect.moveRight(screenRight);
+            }
         }
-        rubberBand->setGeometry(newRect);
-        lastPos = eventPos;
+
+        rubberBand->move(newBandRect.topLeft());
     }
 }
 
