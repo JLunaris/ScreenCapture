@@ -35,23 +35,19 @@ void CaptureWindow::mouseMoveEvent(QMouseEvent *event)
     if (state == Selecting) {
         rubberBand->setGeometry(QRect {origin, eventPos}.normalized());
     } else if (state == MovingSelection) {
-        QPoint delta {eventPos - lastPos};
-        QRect newGeometry {rubberBand->geometry().translated(delta)};
-        QRect screenRect = QApplication::primaryScreen()->geometry();
-        if (screenRect.contains(newGeometry)) {
-            rubberBand->setGeometry(newGeometry);
-        }
-        lastPos = eventPos;
+        int deltaX {eventPos.x() - lastPos.x()};
+        int deltaY {eventPos.y() - lastPos.y()};
+        QRect newRect {rubberBand->geometry()};
+        QRect screenRect {QApplication::primaryScreen()->geometry()};
 
-//        QPoint delta = eventPos - lastPos;
-//        QRect newGeometry = rubberBand->geometry().translated(delta);
-//
-//        // 限制选区不超出屏幕
-//        QRect screenRect = QApplication::primaryScreen()->geometry();
-//        newGeometry = newGeometry.intersected(screenRect);
-//
-//        rubberBand->setGeometry(newGeometry);
-//        lastPos = eventPos;
+        if (screenRect.contains(newRect.translated(deltaX, 0))) {
+            newRect.translate(deltaX, 0);
+        }
+        if (screenRect.contains(newRect.translated(0, deltaY))) {
+            newRect.translate(0, deltaY);
+        }
+        rubberBand->setGeometry(newRect);
+        lastPos = eventPos;
     }
 }
 
