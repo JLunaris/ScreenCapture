@@ -4,23 +4,48 @@
 #include <QMouseEvent>
 #include <QPoint>
 #include <QApplication>
+#include <QPainterPath>
 
 void CaptureWindow::paintEvent(QPaintEvent *event)
 {
-    QWidget::paintEvent(event);
+    std::printf("paintEvent\n");
     QPainter painter {this};
     painter.drawPixmap(0, 0, background);
-    painter.fillRect(rect(), QColor(0, 0, 0, 80));
+
+    if (state != BeforeSelection) {
+        QPainterPath overlayPath;
+        overlayPath.addRect(rect());
+
+        QPainterPath highlightPath;
+        highlightPath.addRect(rubberBand->geometry());
+
+        overlayPath = overlayPath.subtracted(highlightPath);
+        painter.fillPath(overlayPath, QBrush {QColor {0, 0, 0, 80}});
+    }
+
+//    // 2. 创建覆盖层路径
+//    QPainterPath overlayPath;
+//    overlayPath.addRect(this->rect()); // 覆盖整个窗口
+//
+//    // 3. 当有选区时挖空选中区域
+//    if (state != CaptureState::BeforeSelection && rubberBand->isVisible()) {
+//        QPainterPath highlightPath;
+//        highlightPath.addRect(rubberBand->geometry());
+//        overlayPath = overlayPath.subtracted(highlightPath); // 从覆盖层中减去选区
+//    }
+//
+//    // 4. 绘制半透明覆盖层（选区外变暗）
+//    painter.fillPath(overlayPath, QColor(0, 0, 0, 80));
 }
 
 void CaptureWindow::mousePressEvent(QMouseEvent *event)
 {
+    update();
     if (state == BeforeSelection) {
         origin = event->pos();
         rubberBand->setGeometry(QRect {origin, QSize {}});
         rubberBand->show();
-        state = Selecting;
-    } else if (state == SelectionDone or state == MoveSelectionDone) {
+    } else if (state == SelectionDone) {
         QPoint eventPos {event->pos()};
         if (rubberBand->geometry().contains(eventPos, true)) {
             state = MovingSelection;
@@ -31,8 +56,10 @@ void CaptureWindow::mousePressEvent(QMouseEvent *event)
 
 void CaptureWindow::mouseMoveEvent(QMouseEvent *event)
 {
+    update();
     QPoint eventPos {event->pos()};
-    if (state == Selecting) {
+    if (state == BeforeSelection || state == Selecting) {
+        state = Selecting;
         rubberBand->setGeometry(QRect {origin, eventPos}.normalized());
     } else if (state == MovingSelection) {
         int deltaX {eventPos.x() - lastPos.x()};
@@ -42,6 +69,10 @@ void CaptureWindow::mouseMoveEvent(QMouseEvent *event)
         const QRect &bandRect {rubberBand->geometry()};
         QRect newBandRect {bandRect};
 
+        /* 下面的if语句中，"更新后越界"的else分支是有必要的：
+         * 当鼠标快速移动到屏幕边缘时，选区并没有完全移动到边缘，而是留有一段距离。而当鼠标移动较慢时，这个现象不会出现。
+         * 问题出在处理选区移动时的边界检测逻辑上。当鼠标快速移动时，单次事件的位移量(deltaX/deltaY)可能过大，导致当前逻辑直接放弃移动，而非移动到允许的最大距离。*/
+
         if (deltaY < 0) { // 向上移动
             int screenTop {screenRect.top()};
             int bandTop {bandRect.top()};
@@ -49,7 +80,7 @@ void CaptureWindow::mouseMoveEvent(QMouseEvent *event)
                 newBandRect.translate(0, deltaY);
                 lastPos.ry() = eventPos.y();
             } else { // 更新后越界
-                newBandRect.moveTop(screenTop);
+                newBandRect.moveTop(screenTop); // 修正选区位置
             }
         } else if (deltaY > 0) { // 向下移动
             int screenBottom {screenRect.bottom()};
@@ -88,10 +119,9 @@ void CaptureWindow::mouseMoveEvent(QMouseEvent *event)
 
 void CaptureWindow::mouseReleaseEvent(QMouseEvent *event)
 {
-    if (state == Selecting) {
+    update();
+    if (state == Selecting || state == MovingSelection) {
         state = SelectionDone;
-    } else if (state == MovingSelection) {
-        state = MoveSelectionDone;
     }
 }
 

@@ -110,7 +110,7 @@ MainWindow::MainWindow(QWidget *parent)
         }();
 
         pictureFrame = new QFrame {this->centralWidget()};
-        pictureFrame->setFrameStyle(QFrame::Shape::Box);
+//        pictureFrame->setFrameStyle(QFrame::Shape::Box);
     }();
 
     connect(snipButton, &QPushButton::clicked, this, &MainWindow::captureScreen);

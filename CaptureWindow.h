@@ -14,7 +14,6 @@ class CaptureWindow : public QWidget
         Selecting,          // 选区中（鼠标拖动绘制）
         SelectionDone,      // 选区结束（完成绘制）
         MovingSelection,    // 移动已有选区中
-        MoveSelectionDone,  // 移动选区结束
     };
     using enum CaptureState;
 
@@ -23,7 +22,7 @@ private:
     QRubberBand *rubberBand {new QRubberBand {QRubberBand::Rectangle, this}};
     QPoint origin; // 选区时，用于记录选区的起点
     CaptureState state {BeforeSelection};
-    QPoint lastPos; // 移动选区时，用于记录上一次鼠标事件的位置
+    QPoint lastPos; // 移动选区时，用于记录上一次鼠标事件的位置(不一定是真的)
 
 protected:
     void paintEvent(QPaintEvent *event) override;
