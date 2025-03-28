@@ -22,20 +22,6 @@ void CaptureWindow::paintEvent(QPaintEvent *event)
         overlayPath = overlayPath.subtracted(highlightPath);
         painter.fillPath(overlayPath, QBrush {QColor {0, 0, 0, 80}});
     }
-
-//    // 2. 创建覆盖层路径
-//    QPainterPath overlayPath;
-//    overlayPath.addRect(this->rect()); // 覆盖整个窗口
-//
-//    // 3. 当有选区时挖空选中区域
-//    if (state != CaptureState::BeforeSelection && rubberBand->isVisible()) {
-//        QPainterPath highlightPath;
-//        highlightPath.addRect(rubberBand->geometry());
-//        overlayPath = overlayPath.subtracted(highlightPath); // 从覆盖层中减去选区
-//    }
-//
-//    // 4. 绘制半透明覆盖层（选区外变暗）
-//    painter.fillPath(overlayPath, QColor(0, 0, 0, 80));
 }
 
 void CaptureWindow::mousePressEvent(QMouseEvent *event)
@@ -76,7 +62,8 @@ void CaptureWindow::mouseMoveEvent(QMouseEvent *event)
 
         /* 下面的if语句中，"更新后越界"的else分支是有必要的：
          * 当鼠标快速移动到屏幕边缘时，选区并没有完全移动到边缘，而是留有一段距离。而当鼠标移动较慢时，这个现象不会出现。
-         * 问题出在处理选区移动时的边界检测逻辑上。当鼠标快速移动时，单次事件的位移量(deltaX/deltaY)可能过大，导致当前逻辑直接放弃移动，而非移动到允许的最大距离。*/
+         * 问题出在处理选区移动时的边界检测逻辑上。当鼠标快速移动时，单次事件的位移量(deltaX/deltaY)可能过大，
+         * 导致当前逻辑直接放弃移动，而非移动到允许的最大距离。*/
 
         if (deltaY < 0) { // 向上移动
             int screenTop {screenRect.top()};
