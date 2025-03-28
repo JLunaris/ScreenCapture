@@ -47,8 +47,13 @@ void CaptureWindow::mousePressEvent(QMouseEvent *event)
         rubberBand->show();
     } else if (state == SelectionDone) {
         QPoint eventPos {event->pos()};
-        if (rubberBand->geometry().contains(eventPos, true)) {
+        const QRect &bandRect {rubberBand->geometry()};
+        if (bandRect.contains(eventPos, true)) {
             state = MovingSelection;
+            relativePos.toTop = eventPos.y() - bandRect.top();
+            relativePos.toBottom = bandRect.bottom() - eventPos.y();
+            relativePos.toLeft = eventPos.x() - bandRect.left();
+            relativePos.toRight = bandRect.right() - eventPos.x();
             lastPos = eventPos;
         }
     }
@@ -81,6 +86,7 @@ void CaptureWindow::mouseMoveEvent(QMouseEvent *event)
                 lastPos.ry() = eventPos.y();
             } else { // 更新后越界
                 newBandRect.moveTop(screenTop); // 修正选区位置
+                lastPos.ry() = screenTop + relativePos.toTop; // 修正lastPos偏移量
             }
         } else if (deltaY > 0) { // 向下移动
             int screenBottom {screenRect.bottom()};
@@ -90,6 +96,7 @@ void CaptureWindow::mouseMoveEvent(QMouseEvent *event)
                 lastPos.ry() = eventPos.y();
             } else { // 更新后越界
                 newBandRect.moveBottom(screenBottom);
+                lastPos.ry() = screenBottom - relativePos.toBottom; // 修正lastPos偏移量
             }
         }
 
@@ -101,6 +108,7 @@ void CaptureWindow::mouseMoveEvent(QMouseEvent *event)
                 lastPos.rx() = eventPos.x();
             } else { // 更新后越界
                 newBandRect.moveLeft(screenLeft);
+                lastPos.rx() = relativePos.toLeft - screenLeft; // 修正lastPos偏移量
             }
         } else if (deltaX > 0) { // 向右移动
             int screenRight {screenRect.right()};
@@ -110,6 +118,7 @@ void CaptureWindow::mouseMoveEvent(QMouseEvent *event)
                 lastPos.rx() = eventPos.x();
             } else { // 更新后越界
                 newBandRect.moveRight(screenRight);
+                lastPos.rx() = screenRight - relativePos.toRight; // 修正lastPos偏移量
             }
         }
 
