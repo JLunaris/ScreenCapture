@@ -8,7 +8,6 @@
 
 void CaptureWindow::paintEvent(QPaintEvent *event)
 {
-    std::printf("paintEvent\n");
     QPainter painter {this};
     painter.drawPixmap(0, 0, background);
 
@@ -26,7 +25,6 @@ void CaptureWindow::paintEvent(QPaintEvent *event)
 
 void CaptureWindow::mousePressEvent(QMouseEvent *event)
 {
-    update();
     if (state == BeforeSelection) {
         origin = event->pos();
         rubberBand->setGeometry(QRect {origin, QSize {}});
@@ -47,10 +45,10 @@ void CaptureWindow::mousePressEvent(QMouseEvent *event)
 
 void CaptureWindow::mouseMoveEvent(QMouseEvent *event)
 {
-    update();
     QPoint eventPos {event->pos()};
-    if (state == BeforeSelection || state == Selecting) {
+    if (state == BeforeSelection or state == Selecting) {
         state = Selecting;
+        update(rect());
         rubberBand->setGeometry(QRect {origin, eventPos}.normalized());
     } else if (state == MovingSelection) {
         int deltaX {eventPos.x() - lastPos.x()};
@@ -115,7 +113,6 @@ void CaptureWindow::mouseMoveEvent(QMouseEvent *event)
 
 void CaptureWindow::mouseReleaseEvent(QMouseEvent *event)
 {
-    update();
     if (state == Selecting || state == MovingSelection) {
         state = SelectionDone;
     }
