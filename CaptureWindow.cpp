@@ -49,10 +49,13 @@ void CaptureWindow::mouseMoveEvent(QMouseEvent *event)
     if (state == BeforeSelection) {
         state = Selecting;
         rubberBand->setGeometry(QRect {origin, eventPos}.normalized());
-        update(rect());
+        update(rect()); // 重新绘制整个区域
     } else if (state == Selecting) {
-        rubberBand->setGeometry(QRect {origin, eventPos}.normalized());
-        update(rect());
+        QRect newRect {QRect {origin, eventPos}.normalized()};
+        QRect updatedRect {rubberBand->geometry().united(newRect)}; // 需要更新的部分 = 旧选区 ∪ 新选区
+        // 见 https://doc.qt.io/qt-6/qrect.html#united
+        rubberBand->setGeometry(newRect);
+        update(updatedRect);
     } else if (state == MovingSelection) {
         int deltaX {eventPos.x() - lastPos.x()};
         int deltaY {eventPos.y() - lastPos.y()};
