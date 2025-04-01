@@ -46,10 +46,13 @@ void CaptureWindow::mousePressEvent(QMouseEvent *event)
 void CaptureWindow::mouseMoveEvent(QMouseEvent *event)
 {
     QPoint eventPos {event->pos()};
-    if (state == BeforeSelection or state == Selecting) {
+    if (state == BeforeSelection) {
         state = Selecting;
-        update(rect());
         rubberBand->setGeometry(QRect {origin, eventPos}.normalized());
+        update(rect());
+    } else if (state == Selecting) {
+        rubberBand->setGeometry(QRect {origin, eventPos}.normalized());
+        update(rect());
     } else if (state == MovingSelection) {
         int deltaX {eventPos.x() - lastPos.x()};
         int deltaY {eventPos.y() - lastPos.y()};
