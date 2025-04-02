@@ -6,6 +6,7 @@
 #include <QRect>
 #include <optional>
 #include <QList>
+#include "Selection.h"
 
 class CaptureWindow : public QWidget
 {
@@ -20,7 +21,7 @@ class CaptureWindow : public QWidget
 
 private:
     QPixmap background;
-    QRubberBand *rubberBand {new QRubberBand {QRubberBand::Rectangle, this}};
+    Selection *selection {new Selection {this}};
 
     CaptureState state {BeforeSelection};
     QPoint origin; // 选区时，用于记录选区的起点

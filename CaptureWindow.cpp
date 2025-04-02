@@ -16,7 +16,7 @@ void CaptureWindow::paintEvent(QPaintEvent *event)
         overlayPath.addRect(rect());
 
         QPainterPath highlightPath;
-        highlightPath.addRect(rubberBand->geometry());
+        highlightPath.addRect(selection->geometry());
 
         overlayPath = overlayPath.subtracted(highlightPath);
         painter.fillPath(overlayPath, QBrush {QColor {0, 0, 0, 80}});
@@ -27,11 +27,11 @@ void CaptureWindow::mousePressEvent(QMouseEvent *event)
 {
     if (state == BeforeSelection) {
         origin = event->pos();
-        rubberBand->setGeometry(QRect {origin, QSize {}});
-        rubberBand->show();
+        selection->setGeometry(QRect {origin, QSize {}});
+        selection->show();
     } else if (state == SelectionDone) {
         QPoint eventPos {event->pos()};
-        const QRect &bandRect {rubberBand->geometry()};
+        const QRect &bandRect {selection->geometry()};
         if (bandRect.contains(eventPos, true)) {
             state = MovingSelection;
             relativePos.toTop = eventPos.y() - bandRect.top();
@@ -48,20 +48,20 @@ void CaptureWindow::mouseMoveEvent(QMouseEvent *event)
     QPoint eventPos {event->pos()};
     if (state == BeforeSelection) {
         state = Selecting;
-        rubberBand->setGeometry(QRect {origin, eventPos}.normalized());
+        selection->setGeometry(QRect {origin, eventPos}.normalized());
         update(rect()); // 重新绘制整个区域
     } else if (state == Selecting) {
         QRect newRect {QRect {origin, eventPos}.normalized()};
-        QRect updatedRect {rubberBand->geometry().united(newRect)}; // 需要更新的部分 = 旧选区 ∪ 新选区
+        QRect updatedRect {selection->geometry().united(newRect)}; // 需要更新的部分 = 旧选区 ∪ 新选区
         // 见 https://doc.qt.io/qt-6/qrect.html#united
-        rubberBand->setGeometry(newRect);
+        selection->setGeometry(newRect);
         update(updatedRect);
     } else if (state == MovingSelection) {
         int deltaX {eventPos.x() - lastPos.x()};
         int deltaY {eventPos.y() - lastPos.y()};
 
         QRect screenRect {QApplication::primaryScreen()->geometry()};
-        const QRect &bandRect {rubberBand->geometry()};
+        const QRect &bandRect {selection->geometry()};
         QRect newBandRect {bandRect};
 
         /* 下面的if语句中，"更新后越界"的else分支是有必要的：
@@ -113,7 +113,7 @@ void CaptureWindow::mouseMoveEvent(QMouseEvent *event)
             }
         }
 
-        rubberBand->move(newBandRect.topLeft());
+        selection->move(newBandRect.topLeft());
     }
 }
 
@@ -127,5 +127,5 @@ void CaptureWindow::mouseReleaseEvent(QMouseEvent *event)
 CaptureWindow::CaptureWindow(QPixmap &&background, QWidget *parent)
         : background(std::move(background)), QWidget(parent, Qt::FramelessWindowHint)
 {
-    rubberBand->setGeometry(QRect {});
+    selection->setGeometry(QRect {});
 }
