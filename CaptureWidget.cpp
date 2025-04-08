@@ -1,4 +1,4 @@
-#include "CaptureWindow.h"
+#include "CaptureWidget.h"
 #include <QPainter>
 #include <QRubberBand>
 #include <QMouseEvent>
@@ -6,7 +6,7 @@
 #include <QApplication>
 #include <QPainterPath>
 
-void CaptureWindow::paintEvent(QPaintEvent *event)
+void CaptureWidget::paintEvent(QPaintEvent *event)
 {
     QPainter painter {this};
     painter.drawPixmap(0, 0, background);
@@ -23,7 +23,7 @@ void CaptureWindow::paintEvent(QPaintEvent *event)
     }
 }
 
-void CaptureWindow::mousePressEvent(QMouseEvent *event)
+void CaptureWidget::mousePressEvent(QMouseEvent *event)
 {
     if (state == BeforeSelection) {
         origin = event->pos();
@@ -43,7 +43,7 @@ void CaptureWindow::mousePressEvent(QMouseEvent *event)
     }
 }
 
-void CaptureWindow::mouseMoveEvent(QMouseEvent *event)
+void CaptureWidget::mouseMoveEvent(QMouseEvent *event)
 {
     QPoint eventPos {event->pos()};
     if (state == BeforeSelection) {
@@ -117,14 +117,14 @@ void CaptureWindow::mouseMoveEvent(QMouseEvent *event)
     }
 }
 
-void CaptureWindow::mouseReleaseEvent(QMouseEvent *event)
+void CaptureWidget::mouseReleaseEvent(QMouseEvent *event)
 {
     if (state == Selecting || state == MovingSelection) {
         state = SelectionDone;
     }
 }
 
-CaptureWindow::CaptureWindow(QPixmap &&background, QWidget *parent)
+CaptureWidget::CaptureWidget(QPixmap &&background, QWidget *parent)
         : background(std::move(background)), QWidget(parent, Qt::FramelessWindowHint)
 {
     selection->setGeometry(QRect {});

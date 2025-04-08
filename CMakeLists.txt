@@ -18,10 +18,12 @@ add_executable(SnippingTool main.cpp
         MainWindow.cpp
         MainWindow.h
         Resources.qrc
-        CaptureWindow.cpp
-        CaptureWindow.h
+        CaptureWidget.cpp
+        CaptureWidget.h
         Selection.cpp
         Selection.h
+        BasicSelection.cpp
+        BasicSelection.h
 )
 target_link_libraries(SnippingTool
         Qt::Core

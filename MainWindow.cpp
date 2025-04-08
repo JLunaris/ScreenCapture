@@ -1,5 +1,5 @@
 #include "MainWindow.h"
-#include "CaptureWindow.h"
+#include "CaptureWidget.h"
 
 #include <QSize>
 #include <QIcon>
@@ -25,12 +25,12 @@ void MainWindow::captureScreen()
     QScreen *screen {QGuiApplication::primaryScreen()};
     QPixmap pixmap {screen->grabWindow()};
 
-    // show CaptureWindow in full screen
+    // show CaptureWidget in full screen
 //    QLabel *label {new QLabel {nullptr, Qt::FramelessWindowHint}};
 //    label->setPixmap(pixmap);
 //    label->showFullScreen();
 
-    CaptureWindow *captureWindow {new CaptureWindow {std::move(pixmap)}};
+    CaptureWidget *captureWindow {new CaptureWidget {std::move(pixmap)}};
     captureWindow->showFullScreen();
 }
 

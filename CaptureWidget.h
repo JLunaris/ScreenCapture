@@ -8,7 +8,7 @@
 #include <QList>
 #include "Selection.h"
 
-class CaptureWindow : public QWidget
+class CaptureWidget : public QWidget
 {
     enum class CaptureState
     {
@@ -35,6 +35,6 @@ protected:
     void mouseReleaseEvent(QMouseEvent *event) override;
 
 public:
-    explicit CaptureWindow(QPixmap &&background, QWidget *parent = nullptr);
+    explicit CaptureWidget(QPixmap &&background, QWidget *parent = nullptr);
 };
 
