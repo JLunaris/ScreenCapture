@@ -3,6 +3,7 @@
 #include <QPainter>
 #include <QPen>
 #include <QRect>
+#include <QRectF>
 #include <QPoint>
 #include <print>
 
@@ -19,22 +20,22 @@ void SelectionSingleMargin::mousePressEvent(QMouseEvent *event)
     case top:
     case topLeft:
         m_virtualPointer = basicGeometry.topLeft(); // 虚拟鼠标指针 为 左上角
-        m_fixedExtremePoint = basicGeometry.bottomRight(); // 固定端点 为 右下角
+        m_fixedExtremePoint = basicGeometry.bottomRight() + QPoint {1, 1}; // 固定端点 为 右下角
         // 两个【对角】确定一个矩形！
         break;
     case right:
     case bottom:
     case bottomRight:
-        m_virtualPointer = basicGeometry.bottomRight(); // 虚拟鼠标指针 为 右下角
+        m_virtualPointer = basicGeometry.bottomRight() + QPoint {1, 1}; // 虚拟鼠标指针 为 右下角
         m_fixedExtremePoint = basicGeometry.topLeft(); // 固定端点 为 左上角
         break;
     case topRight:
-        m_virtualPointer = basicGeometry.topRight(); // 虚拟鼠标指针 为 右上角
-        m_fixedExtremePoint = basicGeometry.bottomLeft(); // 固定端点 为 左下角
+        m_virtualPointer = basicGeometry.topRight() + QPoint {1, 0}; // 虚拟鼠标指针 为 右上角
+        m_fixedExtremePoint = basicGeometry.bottomLeft() + QPoint {0, 1}; // 固定端点 为 左下角
         break;
     case bottomLeft:
-        m_virtualPointer = basicGeometry.bottomLeft(); // 虚拟鼠标指针 为 左下角
-        m_fixedExtremePoint = basicGeometry.topRight(); // 固定端点 为 右上角
+        m_virtualPointer = basicGeometry.bottomLeft() + QPoint {0, 1}; // 虚拟鼠标指针 为 左下角
+        m_fixedExtremePoint = basicGeometry.topRight() + QPoint {1, 0}; // 固定端点 为 右上角
         break;
     }
 }
@@ -52,14 +53,14 @@ void SelectionSingleMargin::mouseMoveEvent(QMouseEvent *event)
     case right: {
         int deltaX {eventPosInGrandparent.x() - m_lastEventPos.x()};
         m_virtualPointer += QPoint {deltaX, 0}; // 移动虚拟鼠标指针
-        parentSelection()->setBasicGeometry(QRect {m_virtualPointer, m_fixedExtremePoint}.normalized());
+        parentSelection()->setBasicGeometry(QRectF {m_virtualPointer, m_fixedExtremePoint}.normalized().toRect());
         break;
     }
     case top:
     case bottom: {
         int deltaY {eventPosInGrandparent.y() - m_lastEventPos.y()};
         m_virtualPointer += QPoint {0, deltaY};
-        parentSelection()->setBasicGeometry(QRect {m_virtualPointer, m_fixedExtremePoint}.normalized());
+        parentSelection()->setBasicGeometry(QRectF {m_virtualPointer, m_fixedExtremePoint}.normalized().toRect());
         break;
     }
     case topLeft:
@@ -69,7 +70,7 @@ void SelectionSingleMargin::mouseMoveEvent(QMouseEvent *event)
         int deltaX {eventPosInGrandparent.x() - m_lastEventPos.x()};
         int deltaY {eventPosInGrandparent.y() - m_lastEventPos.y()};
         m_virtualPointer += QPoint {deltaX, deltaY};
-        parentSelection()->setBasicGeometry(QRect {m_virtualPointer, m_fixedExtremePoint}.normalized());
+        parentSelection()->setBasicGeometry(QRectF {m_virtualPointer, m_fixedExtremePoint}.normalized().toRect());
         break;
     }
     }
