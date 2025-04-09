@@ -4,6 +4,7 @@
 #include <QPen>
 #include <QRect>
 #include <QPoint>
+#include <print>
 
 void SelectionSingleMargin::mousePressEvent(QMouseEvent *event)
 {
@@ -15,9 +16,25 @@ void SelectionSingleMargin::mousePressEvent(QMouseEvent *event)
         using
         enum Type;
     case left:
+    case top:
+    case topLeft:
         m_virtualPointer = basicGeometry.topLeft(); // 虚拟鼠标指针 为 左上角
         m_fixedExtremePoint = basicGeometry.bottomRight(); // 固定端点 为 右下角
-        // 两个对角确定一个矩形！
+        // 两个【对角】确定一个矩形！
+        break;
+    case right:
+    case bottom:
+    case bottomRight:
+        m_virtualPointer = basicGeometry.bottomRight(); // 虚拟鼠标指针 为 右下角
+        m_fixedExtremePoint = basicGeometry.topLeft(); // 固定端点 为 左上角
+        break;
+    case topRight:
+        m_virtualPointer = basicGeometry.topRight(); // 虚拟鼠标指针 为 右上角
+        m_fixedExtremePoint = basicGeometry.bottomLeft(); // 固定端点 为 左下角
+        break;
+    case bottomLeft:
+        m_virtualPointer = basicGeometry.bottomLeft(); // 虚拟鼠标指针 为 左下角
+        m_fixedExtremePoint = basicGeometry.topRight(); // 固定端点 为 右上角
         break;
     }
 }
@@ -27,24 +44,34 @@ void SelectionSingleMargin::mouseMoveEvent(QMouseEvent *event)
     if (!active()) return;
 
     const QPoint eventPosInGrandparent {mapTo(parentWidget()->parentWidget(), event->pos())};
-    const QRect grandparentRect {parentSelection()->parentWidget()->rect()};
 
     switch (m_type) {
         using
         enum Type;
     case left:
+    case right: {
         int deltaX {eventPosInGrandparent.x() - m_lastEventPos.x()};
-
-        // 越界检查
-        int newX {m_virtualPointer.x() + deltaX};
-        if (newX < 0 or newX > grandparentRect.right()) {
-
-        }
-
         m_virtualPointer += QPoint {deltaX, 0}; // 移动虚拟鼠标指针
-        QPoint newTopLeft {m_virtualPointer};
-        parentSelection()->setBasicGeometry(QRect {newTopLeft, m_fixedExtremePoint}.normalized());
+        parentSelection()->setBasicGeometry(QRect {m_virtualPointer, m_fixedExtremePoint}.normalized());
         break;
+    }
+    case top:
+    case bottom: {
+        int deltaY {eventPosInGrandparent.y() - m_lastEventPos.y()};
+        m_virtualPointer += QPoint {0, deltaY};
+        parentSelection()->setBasicGeometry(QRect {m_virtualPointer, m_fixedExtremePoint}.normalized());
+        break;
+    }
+    case topLeft:
+    case topRight:
+    case bottomLeft:
+    case bottomRight: {
+        int deltaX {eventPosInGrandparent.x() - m_lastEventPos.x()};
+        int deltaY {eventPosInGrandparent.y() - m_lastEventPos.y()};
+        m_virtualPointer += QPoint {deltaX, deltaY};
+        parentSelection()->setBasicGeometry(QRect {m_virtualPointer, m_fixedExtremePoint}.normalized());
+        break;
+    }
     }
 
     m_lastEventPos = eventPosInGrandparent;
@@ -116,6 +143,8 @@ bool SelectionSingleMargin::active() const
 
 void Selection::paintEvent(QPaintEvent *event)
 {
+    std::println("宽度和高度：({}, {})  位置：({}, {})", basicWidth(), basicHeight(), basicGeometry().x(),
+                 basicGeometry().y());
     QPainter painter {this};
     QPen pen {m_frameColor};
     pen.setWidth(2); // 宽度设为0 可以避免 在移动选区时线条有时粗有时细
@@ -239,9 +268,9 @@ void Selection::setBasicGeometry(QRect rect)
     QRect parentRect {parentWidget()->rect()};
     // 禁止越界
     if (rect.left() < 0) { rect.setLeft(0); }
-    if (rect.right() > parentRect.right()) { rect.setRight(parentRect.right()); }
+    if (rect.right() + 1 > parentRect.right() + 1) { rect.setRight(parentRect.right()); }
     if (rect.top() < 0) { rect.setTop(0); }
-    if (rect.bottom() > parentRect.bottom()) { rect.setBottom(parentRect.bottom()); }
+    if (rect.bottom() + 1 > parentRect.bottom() + 1) { rect.setBottom(parentRect.bottom()); }
 
     QPoint topLeft {rect.topLeft() - QPoint {m_extension, m_extension}};
     QPoint bottomRight {rect.bottomRight() + QPoint {m_extension, m_extension}};
@@ -275,9 +304,9 @@ void Selection::moveBasic(QPoint point)
     QRect parentRect {parentWidget()->rect()};
     // 禁止越界
     if (point.x() < 0) { point.rx() = 0; }
-    if (point.x() + basicWidth() > parentRect.right()) { point.rx() = parentRect.right() - basicWidth(); }
+    if (point.x() + basicWidth() > parentRect.right() + 1) { point.rx() = parentRect.right() + 1 - basicWidth(); }
     if (point.y() < 0) { point.ry() = 0; }
-    if (point.y() + basicHeight() > parentRect.bottom()) { point.ry() = parentRect.bottom() - basicHeight(); }
+    if (point.y() + basicHeight() > parentRect.bottom() + 1) { point.ry() = parentRect.bottom() + 1 - basicHeight(); }
 
     move(point - QPoint {m_extension, m_extension});
 }
