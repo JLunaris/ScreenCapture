@@ -4,7 +4,6 @@
 #include <QPixmap>
 #include <QRubberBand>
 #include <QRect>
-#include <optional>
 #include <QList>
 #include "Selection.h"
 
