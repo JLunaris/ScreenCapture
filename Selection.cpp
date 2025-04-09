@@ -9,26 +9,45 @@ void SelectionSingleMargin::mousePressEvent(QMouseEvent *event)
 {
     if (!active()) return;
 
-    m_lastEventPosInGrandparent = mapTo(parentWidget()->parentWidget(), event->pos());
+    m_lastEventPos = mapTo(parentWidget()->parentWidget(), event->pos());
+    const QRect &basicGeometry {parentSelection()->basicGeometry()};
+    switch (m_type) {
+        using
+        enum Type;
+    case left:
+        m_virtualPointer = basicGeometry.topLeft(); // 虚拟鼠标指针 为 左上角
+        m_fixedExtremePoint = basicGeometry.bottomRight(); // 固定端点 为 右下角
+        // 两个对角确定一个矩形！
+        break;
+    }
 }
 
 void SelectionSingleMargin::mouseMoveEvent(QMouseEvent *event)
 {
-    printf("移动");
     if (!active()) return;
 
-    QPoint eventPosInGrandparent {mapTo(parentWidget()->parentWidget(), event->pos())};
+    const QPoint eventPosInGrandparent {mapTo(parentWidget()->parentWidget(), event->pos())};
+    const QRect grandparentRect {parentSelection()->parentWidget()->rect()};
 
     switch (m_type) {
         using
         enum Type;
     case left:
-        int deltaX {eventPosInGrandparent.x() - m_lastEventPosInGrandparent.x()};
+        int deltaX {eventPosInGrandparent.x() - m_lastEventPos.x()};
 
+        // 越界检查
+        int newX {m_virtualPointer.x() + deltaX};
+        if (newX < 0 or newX > grandparentRect.right()) {
+
+        }
+
+        m_virtualPointer += QPoint {deltaX, 0}; // 移动虚拟鼠标指针
+        QPoint newTopLeft {m_virtualPointer};
+        parentSelection()->setBasicGeometry(QRect {newTopLeft, m_fixedExtremePoint}.normalized());
         break;
     }
 
-    m_lastEventPosInGrandparent = eventPosInGrandparent;
+    m_lastEventPos = eventPosInGrandparent;
 }
 
 void SelectionSingleMargin::mouseReleaseEvent(QMouseEvent *event) {}
@@ -80,6 +99,11 @@ SelectionSingleMargin::SelectionSingleMargin(Selection *parent, Type type)
     }
 }
 
+Selection *SelectionSingleMargin::parentSelection() const
+{
+    return static_cast<Selection *>(parentWidget());
+}
+
 void SelectionSingleMargin::setActive(bool active)
 {
     m_active = active;
@@ -129,7 +153,8 @@ void Selection::resizeEvent(QResizeEvent *event)
 void Selection::mousePressEvent(QMouseEvent *event)
 {
     if (m_mode == NonPaintingMode) {
-        m_mouseRelativePos = event->pos();
+        m_lastEventPos = mapToParent(event->pos());
+        m_virtualPointer = basicGeometry().topLeft();
     } else if (m_mode == PaintingMode) {
 
     }
@@ -138,8 +163,12 @@ void Selection::mousePressEvent(QMouseEvent *event)
 void Selection::mouseMoveEvent(QMouseEvent *event)
 {
     if (m_mode == NonPaintingMode) {
-        QPoint eventPosInParent {mapToParent(event->pos())};
-        move(eventPosInParent - m_mouseRelativePos);
+        const QPoint eventPosInParent {mapToParent(event->pos())};
+        QPoint delta {eventPosInParent - m_lastEventPos};
+        m_virtualPointer += delta; // 移动虚拟鼠标指针
+        QPoint newTopLeft {m_virtualPointer};
+        moveBasic(newTopLeft);
+        m_lastEventPos = eventPosInParent;
     } else if (m_mode == PaintingMode) {
 
     }
@@ -185,12 +214,75 @@ Selection::Selection(QWidget *parent)
     setMinimumHeight(m_extension * 2); // 同理
 }
 
+Selection::Mode Selection::mode() const
+{
+    return m_mode;
+}
+
+
 void Selection::setMode(Selection::Mode mode)
 {
     m_mode = mode;
 }
 
-Selection::Mode Selection::mode() const
+
+QRect Selection::basicGeometry() const
 {
-    return m_mode;
+    QPoint topLeft {geometry().topLeft() + QPoint {m_extension, m_extension}};
+    QPoint bottomRight {geometry().bottomRight() - QPoint {m_extension, m_extension}};
+    return QRect {topLeft, bottomRight};
+}
+
+
+void Selection::setBasicGeometry(QRect rect)
+{
+    QRect parentRect {parentWidget()->rect()};
+    // 禁止越界
+    if (rect.left() < 0) { rect.setLeft(0); }
+    if (rect.right() > parentRect.right()) { rect.setRight(parentRect.right()); }
+    if (rect.top() < 0) { rect.setTop(0); }
+    if (rect.bottom() > parentRect.bottom()) { rect.setBottom(parentRect.bottom()); }
+
+    QPoint topLeft {rect.topLeft() - QPoint {m_extension, m_extension}};
+    QPoint bottomRight {rect.bottomRight() + QPoint {m_extension, m_extension}};
+    setGeometry(QRect {topLeft, bottomRight});
+}
+
+
+void Selection::setBasicGeometry(int x, int y, int w, int h)
+{
+    setBasicGeometry(QRect {x, y, w, h});
+}
+
+
+QRect Selection::basicRect() const
+{
+    return QRect {0, 0, m_basicSelection->width(), m_basicSelection->height()};
+}
+
+int Selection::basicWidth() const
+{
+    return m_basicSelection->width();
+}
+
+int Selection::basicHeight() const
+{
+    return m_basicSelection->height();
+}
+
+void Selection::moveBasic(QPoint point)
+{
+    QRect parentRect {parentWidget()->rect()};
+    // 禁止越界
+    if (point.x() < 0) { point.rx() = 0; }
+    if (point.x() + basicWidth() > parentRect.right()) { point.rx() = parentRect.right() - basicWidth(); }
+    if (point.y() < 0) { point.ry() = 0; }
+    if (point.y() + basicHeight() > parentRect.bottom()) { point.ry() = parentRect.bottom() - basicHeight(); }
+
+    move(point - QPoint {m_extension, m_extension});
+}
+
+void Selection::moveBasic(int x, int y)
+{
+    moveBasic(QPoint {x, y});
 }

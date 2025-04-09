@@ -26,8 +26,10 @@ public:
 private:
     Type m_type;
     bool m_active {true}; // 是否激活该控件(非激活状态下无法拉伸)
-    QPoint m_lastEventPosInGrandparent; // 鼠标移动时，记录上次鼠标移动事件的位置(相当于Selection的父控件的坐标系)
-    QPoint virtualPointer; // 虚拟鼠标指针
+    QPoint m_lastEventPos; // 鼠标移动时，记录上次鼠标移动事件的位置(相对于Selection的父控件的坐标系)
+    // 当虚拟指针将要超出Selection的父控件的范围时，修正鼠标移动事件的位置。
+    QPoint m_fixedExtremePoint; // 鼠标移动时，记录固定端点(相对于Selection的父控件的坐标系)
+    QPoint m_virtualPointer; // 虚拟鼠标指针(相对于Selection的父控件的坐标系)
 
 protected:
     void mousePressEvent(QMouseEvent *event) override;
@@ -35,6 +37,7 @@ protected:
     void mouseReleaseEvent(QMouseEvent *event) override;
 public:
     SelectionSingleMargin(Selection *parent, Type type);
+    [[nodiscard]] Selection *parentSelection() const;
     void setActive(bool active);
     [[nodiscard]] bool active() const;
 };
@@ -63,7 +66,8 @@ private:
     QColor m_frameColor {66, 133, 244}; // 边框颜色
     Mode m_mode {NonPaintingMode}; // 模式
 
-    QPoint m_mouseRelativePos; // 鼠标单击选区时,在该选区中的坐标
+    QPoint m_lastEventPos; // 鼠标移动时，记录上次鼠标移动事件的位置(相对于父控件坐标系)
+    QPoint m_virtualPointer; // 虚拟鼠标指针(相对于父控件坐标系)
 
 protected:
     void paintEvent(QPaintEvent *event) override;
@@ -74,6 +78,18 @@ protected:
 
 public:
     explicit Selection(QWidget *parent = nullptr);
-    void setMode(Mode mode);
+
     [[nodiscard]] Mode mode() const;
+    void setMode(Mode mode);
+
+    [[nodiscard]] QRect basicGeometry() const;
+    void setBasicGeometry(QRect rect);
+    void setBasicGeometry(int x, int y, int w, int h);
+
+    [[nodiscard]] QRect basicRect() const;
+    [[nodiscard]] int basicWidth() const;
+    [[nodiscard]] int basicHeight() const;
+
+    void moveBasic(QPoint point);
+    void moveBasic(int x,int y);
 };
