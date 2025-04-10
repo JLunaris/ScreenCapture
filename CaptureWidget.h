@@ -3,7 +3,6 @@
 #include <QWidget>
 #include <QPixmap>
 #include <QRect>
-#include <QLabel>
 #include "Selection.h"
 #include <QPoint>
 #include <QPointF>
@@ -47,11 +46,10 @@ public:
         Selecting,          // 选区中（鼠标拖动绘制）
         SelectionDone,      // 选区结束（完成绘制）
     };
-    using
-    enum CaptureState;
+    using enum CaptureState;
 
 private:
-    QLabel *m_background {new QLabel {this}};
+    QPixmap m_background;
     Selection *m_selection {nullptr};
 
     CaptureState m_state {CaptureState::BeforeSelection}; // 执行状态
@@ -61,8 +59,8 @@ protected:
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
-//    void paintEvent(QPaintEvent *event) override;
+    void paintEvent(QPaintEvent *event) override;
 
 public:
-    explicit CaptureWidget(const QPixmap &background, QWidget *parent = nullptr);
+    explicit CaptureWidget(QPixmap &&background, QWidget *parent = nullptr);
 };

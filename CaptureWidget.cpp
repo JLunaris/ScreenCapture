@@ -135,9 +135,11 @@ void CaptureWidget::mousePressEvent(QMouseEvent *event)
         m_selection = new Selection {this};
         m_selection->setBasicGeometry(QRectF {m_origin, m_origin}.toRect());
         m_selection->show(); // Note: 必须显式show()才能可见
+        update();
         m_state = Selecting;
     }
 }
+
 
 void CaptureWidget::mouseMoveEvent(QMouseEvent *event)
 {
@@ -147,6 +149,7 @@ void CaptureWidget::mouseMoveEvent(QMouseEvent *event)
     }
 }
 
+
 void CaptureWidget::mouseReleaseEvent(QMouseEvent *event)
 {
     if (m_state == Selecting) {
@@ -154,27 +157,27 @@ void CaptureWidget::mouseReleaseEvent(QMouseEvent *event)
     }
 }
 
-//void CaptureWidget::paintEvent(QPaintEvent *event)
-//{
-//    QPainter painter {this};
-//    painter.fillRect(rect(), QBrush {QColor {0, 0, 0, 80}});
-//    if (m_selection) {
-//        QPainterPath overlayPath;
-//        overlayPath.addRect(rect());
-//
-//        QPainterPath highlightPath;
-//        highlightPath.addRect(m_selection->basicGeometry());
-//
-//        overlayPath = overlayPath.subtracted(highlightPath);
-//        painter.fillPath(overlayPath, QBrush {QColor {0, 0, 0, 80}});
-//    }
-//    std::println("paintEvent");
-//}
 
-CaptureWidget::CaptureWidget(const QPixmap &background, QWidget *parent)
-        : QWidget(parent, Qt::FramelessWindowHint)
+void CaptureWidget::paintEvent(QPaintEvent *event)
 {
-    m_background->setPixmap(background);
+    QPainter painter {this};
+    painter.drawPixmap(rect(), m_background);
+    if (m_selection) {
+        QPainterPath overlayPath;
+        overlayPath.addRect(rect());
+
+        QPainterPath highlightPath;
+        highlightPath.addRect(m_selection->basicGeometry());
+
+        overlayPath = overlayPath.subtracted(highlightPath);
+        painter.fillPath(overlayPath, QBrush {QColor {0, 0, 0, 80}});
+    }
+}
+
+
+CaptureWidget::CaptureWidget(QPixmap &&background, QWidget *parent)
+        : m_background(std::move(background)), QWidget(parent, Qt::FramelessWindowHint)
+{
     QCursor cursor {QPixmap {":/RedCursor"}, 0, 0};
     setCursor(cursor);
 }

@@ -30,7 +30,7 @@ void MainWindow::captureScreen()
 //    label->setPixmap(pixmap);
 //    label->showFullScreen();
 
-    CaptureWidget *captureWindow {new CaptureWidget {pixmap}};
+    CaptureWidget *captureWindow {new CaptureWidget {std::move(pixmap)}};
     captureWindow->showFullScreen();
 }
 
