@@ -24,6 +24,8 @@ add_executable(SnippingTool main.cpp
         Selection.h
         BasicSelection.cpp
         BasicSelection.h
+        UtilityPanel.cpp
+        UtilityPanel.h
 )
 target_link_libraries(SnippingTool
         Qt::Core
