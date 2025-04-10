@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file alias="Icon">SnippingToolUI/SnippingToolBadgeLogo.scale-100.png</file>
+        <file alias="RedCursor">SnippingToolUI/Cursor.png</file>
     </qresource>
 </RCC>

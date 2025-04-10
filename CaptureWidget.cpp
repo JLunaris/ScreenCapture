@@ -1,131 +1,180 @@
 #include "CaptureWidget.h"
 #include <QPainter>
-#include <QRubberBand>
 #include <QMouseEvent>
+#include <QPaintEvent>
 #include <QPoint>
+#include <QPointF>
 #include <QApplication>
 #include <QPainterPath>
+#include <QBrush>
+#include <print>
 
-void CaptureWidget::paintEvent(QPaintEvent *event)
-{
-    QPainter painter {this};
-    painter.drawPixmap(0, 0, background);
-
-    if (state != BeforeSelection) {
-        QPainterPath overlayPath;
-        overlayPath.addRect(rect());
-
-        QPainterPath highlightPath;
-        highlightPath.addRect(selection->geometry());
-
-        overlayPath = overlayPath.subtracted(highlightPath);
-        painter.fillPath(overlayPath, QBrush {QColor {0, 0, 0, 80}});
-    }
-}
+//void CaptureWidget::paintEvent(QPaintEvent *event)
+//{
+//    QPainter painter {this};
+//    painter.drawPixmap(0, 0, background);
+//
+//    if (m_state != BeforeSelection) {
+//        QPainterPath overlayPath;
+//        overlayPath.addRect(rect());
+//
+//        QPainterPath highlightPath;
+//        highlightPath.addRect(selection->geometry());
+//
+//        overlayPath = overlayPath.subtracted(highlightPath);
+//        painter.fillPath(overlayPath, QBrush {QColor {0, 0, 0, 80}});
+//    }
+//}
+//
+//void CaptureWidget::mousePressEvent(QMouseEvent *event)
+//{
+//    if (m_state == BeforeSelection) {
+//        origin = event->pos();
+//        selection->setGeometry(QRect {origin, QSize {}});
+//        selection->show();
+//    } else if (m_state == SelectionDone) {
+//        QPoint eventPos {event->pos()};
+//        const QRect &bandRect {selection->geometry()};
+//        if (bandRect.contains(eventPos, true)) {
+//            m_state = MovingSelection;
+//            relativePos.toTop = eventPos.y() - bandRect.top();
+//            relativePos.toBottom = bandRect.bottom() - eventPos.y();
+//            relativePos.toLeft = eventPos.x() - bandRect.left();
+//            relativePos.toRight = bandRect.right() - eventPos.x();
+//            lastPos = eventPos;
+//        }
+//    }
+//}
+//
+//void CaptureWidget::mouseMoveEvent(QMouseEvent *event)
+//{
+//    QPoint eventPos {event->pos()};
+//    if (m_state == BeforeSelection) {
+//        m_state = Selecting;
+//        selection->setGeometry(QRect {origin, eventPos}.normalized());
+//        update(rect()); // 重新绘制整个区域
+//    } else if (m_state == Selecting) {
+//        QRect newRect {QRect {origin, eventPos}.normalized()};
+//        QRect updatedRect {selection->geometry().united(newRect)}; // 需要更新的部分 = 旧选区 ∪ 新选区
+//        // 见 https://doc.qt.io/qt-6/qrect.html#united
+//        selection->setGeometry(newRect);
+//        update(updatedRect);
+//    } else if (m_state == MovingSelection) {
+//        int deltaX {eventPos.x() - lastPos.x()};
+//        int deltaY {eventPos.y() - lastPos.y()};
+//
+//        QRect screenRect {QApplication::primaryScreen()->geometry()};
+//        const QRect &bandRect {selection->geometry()};
+//        QRect newBandRect {bandRect};
+//
+//        /* 下面的if语句中，"更新后越界"的else分支是有必要的：
+//         * 当鼠标快速移动到屏幕边缘时，选区并没有完全移动到边缘，而是留有一段距离。而当鼠标移动较慢时，这个现象不会出现。
+//         * 问题出在处理选区移动时的边界检测逻辑上。当鼠标快速移动时，单次事件的位移量(deltaX/deltaY)可能过大，
+//         * 导致当前逻辑直接放弃移动，而非移动到允许的最大距离。*/
+//
+//        if (deltaY < 0) { // 向上移动
+//            int screenTop {screenRect.top()};
+//            int bandTop {bandRect.top()};
+//            if (bandTop + deltaY >= screenTop) { // 更新后未越界
+//                newBandRect.translate(0, deltaY);
+//                lastPos.ry() = eventPos.y();
+//            } else { // 更新后越界
+//                newBandRect.moveTop(screenTop); // 修正选区位置
+//                lastPos.ry() = screenTop + relativePos.toTop; // 修正lastPos偏移量
+//            }
+//        } else if (deltaY > 0) { // 向下移动
+//            int screenBottom {screenRect.bottom()};
+//            int bandBottom {bandRect.bottom()};
+//            if (bandBottom + deltaY <= screenBottom) { // 更新后未越界
+//                newBandRect.translate(0, deltaY);
+//                lastPos.ry() = eventPos.y();
+//            } else { // 更新后越界
+//                newBandRect.moveBottom(screenBottom);
+//                lastPos.ry() = screenBottom - relativePos.toBottom; // 修正lastPos偏移量
+//            }
+//        }
+//
+//        if (deltaX < 0) { // 向左移动
+//            int screenLeft {screenRect.left()};
+//            int bandLeft {bandRect.left()};
+//            if (bandLeft + deltaX >= screenLeft) { // 更新后未越界
+//                newBandRect.translate(deltaX, 0);
+//                lastPos.rx() = eventPos.x();
+//            } else { // 更新后越界
+//                newBandRect.moveLeft(screenLeft);
+//                lastPos.rx() = relativePos.toLeft - screenLeft; // 修正lastPos偏移量
+//            }
+//        } else if (deltaX > 0) { // 向右移动
+//            int screenRight {screenRect.right()};
+//            int bandRight {bandRect.right()};
+//            if (bandRight + deltaX <= screenRight) { // 更新后未越界
+//                newBandRect.translate(deltaX, 0);
+//                lastPos.rx() = eventPos.x();
+//            } else { // 更新后越界
+//                newBandRect.moveRight(screenRight);
+//                lastPos.rx() = screenRight - relativePos.toRight; // 修正lastPos偏移量
+//            }
+//        }
+//
+//        selection->move(newBandRect.topLeft());
+//    }
+//}
+//
+//void CaptureWidget::mouseReleaseEvent(QMouseEvent *event)
+//{
+//    if (m_state == Selecting || m_state == MovingSelection) {
+//        m_state = SelectionDone;
+//    }
+//}
+//
 
 void CaptureWidget::mousePressEvent(QMouseEvent *event)
 {
-    if (state == BeforeSelection) {
-        origin = event->pos();
-        selection->setGeometry(QRect {origin, QSize {}});
-        selection->show();
-    } else if (state == SelectionDone) {
-        QPoint eventPos {event->pos()};
-        const QRect &bandRect {selection->geometry()};
-        if (bandRect.contains(eventPos, true)) {
-            state = MovingSelection;
-            relativePos.toTop = eventPos.y() - bandRect.top();
-            relativePos.toBottom = bandRect.bottom() - eventPos.y();
-            relativePos.toLeft = eventPos.x() - bandRect.left();
-            relativePos.toRight = bandRect.right() - eventPos.x();
-            lastPos = eventPos;
-        }
+    if (m_state == BeforeSelection) {
+        m_origin = event->position();
+        m_selection = new Selection {this};
+        m_selection->setBasicGeometry(QRectF {m_origin, m_origin}.toRect());
+        m_selection->show(); // Note: 必须显式show()才能可见
+        m_state = Selecting;
     }
 }
 
 void CaptureWidget::mouseMoveEvent(QMouseEvent *event)
 {
-    QPoint eventPos {event->pos()};
-    if (state == BeforeSelection) {
-        state = Selecting;
-        selection->setGeometry(QRect {origin, eventPos}.normalized());
-        update(rect()); // 重新绘制整个区域
-    } else if (state == Selecting) {
-        QRect newRect {QRect {origin, eventPos}.normalized()};
-        QRect updatedRect {selection->geometry().united(newRect)}; // 需要更新的部分 = 旧选区 ∪ 新选区
-        // 见 https://doc.qt.io/qt-6/qrect.html#united
-        selection->setGeometry(newRect);
-        update(updatedRect);
-    } else if (state == MovingSelection) {
-        int deltaX {eventPos.x() - lastPos.x()};
-        int deltaY {eventPos.y() - lastPos.y()};
-
-        QRect screenRect {QApplication::primaryScreen()->geometry()};
-        const QRect &bandRect {selection->geometry()};
-        QRect newBandRect {bandRect};
-
-        /* 下面的if语句中，"更新后越界"的else分支是有必要的：
-         * 当鼠标快速移动到屏幕边缘时，选区并没有完全移动到边缘，而是留有一段距离。而当鼠标移动较慢时，这个现象不会出现。
-         * 问题出在处理选区移动时的边界检测逻辑上。当鼠标快速移动时，单次事件的位移量(deltaX/deltaY)可能过大，
-         * 导致当前逻辑直接放弃移动，而非移动到允许的最大距离。*/
-
-        if (deltaY < 0) { // 向上移动
-            int screenTop {screenRect.top()};
-            int bandTop {bandRect.top()};
-            if (bandTop + deltaY >= screenTop) { // 更新后未越界
-                newBandRect.translate(0, deltaY);
-                lastPos.ry() = eventPos.y();
-            } else { // 更新后越界
-                newBandRect.moveTop(screenTop); // 修正选区位置
-                lastPos.ry() = screenTop + relativePos.toTop; // 修正lastPos偏移量
-            }
-        } else if (deltaY > 0) { // 向下移动
-            int screenBottom {screenRect.bottom()};
-            int bandBottom {bandRect.bottom()};
-            if (bandBottom + deltaY <= screenBottom) { // 更新后未越界
-                newBandRect.translate(0, deltaY);
-                lastPos.ry() = eventPos.y();
-            } else { // 更新后越界
-                newBandRect.moveBottom(screenBottom);
-                lastPos.ry() = screenBottom - relativePos.toBottom; // 修正lastPos偏移量
-            }
-        }
-
-        if (deltaX < 0) { // 向左移动
-            int screenLeft {screenRect.left()};
-            int bandLeft {bandRect.left()};
-            if (bandLeft + deltaX >= screenLeft) { // 更新后未越界
-                newBandRect.translate(deltaX, 0);
-                lastPos.rx() = eventPos.x();
-            } else { // 更新后越界
-                newBandRect.moveLeft(screenLeft);
-                lastPos.rx() = relativePos.toLeft - screenLeft; // 修正lastPos偏移量
-            }
-        } else if (deltaX > 0) { // 向右移动
-            int screenRight {screenRect.right()};
-            int bandRight {bandRect.right()};
-            if (bandRight + deltaX <= screenRight) { // 更新后未越界
-                newBandRect.translate(deltaX, 0);
-                lastPos.rx() = eventPos.x();
-            } else { // 更新后越界
-                newBandRect.moveRight(screenRight);
-                lastPos.rx() = screenRight - relativePos.toRight; // 修正lastPos偏移量
-            }
-        }
-
-        selection->move(newBandRect.topLeft());
+    QPointF eventPos {event->position()};
+    if (m_state == Selecting) {
+        m_selection->setBasicGeometry(QRectF {m_origin, eventPos}.normalized().toRect());
     }
 }
 
 void CaptureWidget::mouseReleaseEvent(QMouseEvent *event)
 {
-    if (state == Selecting || state == MovingSelection) {
-        state = SelectionDone;
+    if (m_state == Selecting) {
+        m_state = SelectionDone;
     }
 }
 
-CaptureWidget::CaptureWidget(QPixmap &&background, QWidget *parent)
-        : background(std::move(background)), QWidget(parent, Qt::FramelessWindowHint)
+//void CaptureWidget::paintEvent(QPaintEvent *event)
+//{
+//    QPainter painter {this};
+//    painter.fillRect(rect(), QBrush {QColor {0, 0, 0, 80}});
+//    if (m_selection) {
+//        QPainterPath overlayPath;
+//        overlayPath.addRect(rect());
+//
+//        QPainterPath highlightPath;
+//        highlightPath.addRect(m_selection->basicGeometry());
+//
+//        overlayPath = overlayPath.subtracted(highlightPath);
+//        painter.fillPath(overlayPath, QBrush {QColor {0, 0, 0, 80}});
+//    }
+//    std::println("paintEvent");
+//}
+
+CaptureWidget::CaptureWidget(const QPixmap &background, QWidget *parent)
+        : QWidget(parent, Qt::FramelessWindowHint)
 {
-    selection->setGeometry(QRect {});
+    m_background->setPixmap(background);
+    QCursor cursor {QPixmap {":/RedCursor"}, 0, 0};
+    setCursor(cursor);
 }
