@@ -5,7 +5,7 @@
 void BasicSelection::paintEvent(QPaintEvent *event)
 {
     QPainter painter {this};
-    painter.fillRect(rect(), Qt::GlobalColor::red);
+//    painter.fillRect(rect(), Qt::GlobalColor::red);
 }
 
 BasicSelection::BasicSelection(QWidget *parent)

@@ -146,11 +146,31 @@ void Selection::paintEvent(QPaintEvent *event)
 {
     std::println("宽度和高度：({}, {})  位置：({}, {})", basicWidth(), basicHeight(), basicGeometry().x(),
                  basicGeometry().y());
+
     QPainter painter {this};
     QPen pen {m_frameColor};
-    pen.setWidth(2); // 宽度设为0 可以避免 在移动选区时线条有时粗有时细
+
+    // 画边框
+    pen.setWidth(0); // 宽度设为偶数 可以避免 在移动选区时线条有时粗有时细
     painter.setPen(pen);
-    painter.drawRect(rect());
+    painter.drawRect(m_basicSelection->geometry());
+
+    // 画端点
+    pen.setWidth(4);
+    painter.setPen(pen);
+    QRectF basicSelectionGeometry {m_basicSelection->geometry()};
+    int width {m_basicSelection->width()};
+    int height {m_basicSelection->height()};
+    painter.drawPoint(basicSelectionGeometry.topLeft());
+    painter.drawPoint(basicSelectionGeometry.topRight());
+    painter.drawPoint(basicSelectionGeometry.bottomLeft());
+    painter.drawPoint(basicSelectionGeometry.bottomRight());
+    painter.drawPoint(basicSelectionGeometry.topLeft() + QPointF {static_cast<qreal>(width) / 2, 0}); // 上
+    painter.drawPoint(basicSelectionGeometry.topLeft() + QPointF {0, static_cast<qreal>(height) / 2}); // 左
+    painter.drawPoint(basicSelectionGeometry.topLeft() +
+                      QPointF {static_cast<qreal>(width) / 2, static_cast<qreal>(height)}); // 下
+    painter.drawPoint(basicSelectionGeometry.topLeft() +
+                      QPointF {static_cast<qreal>(width), static_cast<qreal>(height) / 2}); // 右
 }
 
 void Selection::resizeEvent(QResizeEvent *event)
