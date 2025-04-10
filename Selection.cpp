@@ -258,9 +258,7 @@ void Selection::setMode(Selection::Mode mode)
 
 QRect Selection::basicGeometry() const
 {
-    QPoint topLeft {geometry().topLeft() + QPoint {m_extension, m_extension}};
-    QPoint bottomRight {geometry().bottomRight() - QPoint {m_extension, m_extension}};
-    return QRect {topLeft, bottomRight};
+    return geometry().adjusted(m_extension, m_extension, -m_extension, -m_extension);
 }
 
 
@@ -273,9 +271,7 @@ void Selection::setBasicGeometry(QRect rect)
     if (rect.top() < 0) { rect.setTop(0); }
     if (rect.bottom() + 1 > parentRect.bottom() + 1) { rect.setBottom(parentRect.bottom()); }
 
-    QPoint topLeft {rect.topLeft() - QPoint {m_extension, m_extension}};
-    QPoint bottomRight {rect.bottomRight() + QPoint {m_extension, m_extension}};
-    setGeometry(QRect {topLeft, bottomRight});
+    setGeometry(rect.adjusted(-m_extension, -m_extension, m_extension, m_extension));
 }
 
 
