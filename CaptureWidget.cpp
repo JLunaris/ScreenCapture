@@ -135,7 +135,7 @@ void CaptureWidget::mousePressEvent(QMouseEvent *event)
         m_selection = new Selection {this};
         m_selection->setBasicGeometry(QRectF {m_origin, m_origin}.toRect());
         m_selection->show(); // Note: 必须显式show()才能可见
-        update();
+        update(); // 更新整个CaptureWidget以显示出遮罩
         m_state = Selecting;
     }
 }
@@ -153,6 +153,9 @@ void CaptureWidget::mouseMoveEvent(QMouseEvent *event)
 void CaptureWidget::mouseReleaseEvent(QMouseEvent *event)
 {
     if (m_state == Selecting) {
+        m_utilityPanel = new UtilityPanel {this};
+        m_utilityPanel->setGeometry(QRect{0,0,100,100});
+        m_utilityPanel->show();
         m_state = SelectionDone;
     }
 }

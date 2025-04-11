@@ -6,6 +6,7 @@
 #include "Selection.h"
 #include <QPoint>
 #include <QPointF>
+#include "UtilityPanel.h"
 
 //class CaptureWidget : public QWidget
 //{
@@ -51,6 +52,7 @@ public:
 private:
     QPixmap m_background;
     Selection *m_selection {nullptr};
+    UtilityPanel *m_utilityPanel {nullptr};
 
     CaptureState m_state {CaptureState::BeforeSelection}; // 执行状态
     QPointF m_origin; // 选区的起点

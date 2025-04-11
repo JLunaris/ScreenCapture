@@ -2,7 +2,8 @@
 
 #include <QWidget>
 #include <QPushButton>
-#include "CaptureWidget.h"
+
+class CaptureWidget; // forward declaration
 
 class UtilityPanel : public QWidget
 {
