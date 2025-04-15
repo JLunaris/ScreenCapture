@@ -63,7 +63,7 @@ private:
 
     int m_extension {4}; // 向外扩展几个像素
     int m_marginWidth {8}; // 边框厚度
-    QColor m_frameColor {66, 133, 244}; // 边框颜色
+    QColor m_frameColor {107, 173, 246}; // 边框颜色
     Mode m_mode {NonPaintingMode}; // 模式
 
     QPoint m_lastEventPos; // 鼠标移动时，记录上次鼠标移动事件的位置(相对于父控件坐标系)

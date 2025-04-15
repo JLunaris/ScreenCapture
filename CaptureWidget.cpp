@@ -154,8 +154,9 @@ void CaptureWidget::mouseReleaseEvent(QMouseEvent *event)
 {
     if (m_state == Selecting) {
         m_utilityPanel = new UtilityPanel {this};
-        m_utilityPanel->setGeometry(QRect{0,0,100,100});
         m_utilityPanel->show();
+        m_utilityPanel->setFixedHeight(24);
+        m_utilityPanel->move(100, 100);
         m_state = SelectionDone;
     }
 }

@@ -2,5 +2,13 @@
     <qresource prefix="/">
         <file alias="Icon">SnippingToolUI/SnippingToolBadgeLogo.scale-100.png</file>
         <file alias="RedCursor">SnippingToolUI/Cursor.png</file>
+        <file alias="Finish">SnippingToolUI/copy.png</file>
+        <file alias="Close">SnippingToolUI/close.png</file>
+        <file alias="Save">SnippingToolUI/save.png</file>
+        <file alias="Rectangle">SnippingToolUI/rectangle.png</file>
+        <file alias="Ellipse">SnippingToolUI/ellipse.png</file>
+        <file alias="Pencil">SnippingToolUI/pencil.png</file>
+        <file alias="HLine">SnippingToolUI/horizontal line.png</file>
+        <file alias="Redo">SnippingToolUI/redo.png</file>
     </qresource>
 </RCC>
