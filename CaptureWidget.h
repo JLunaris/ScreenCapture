@@ -65,4 +65,5 @@ protected:
 
 public:
     explicit CaptureWidget(QPixmap &&background, QWidget *parent = nullptr);
+    void updatePosOfUtilityPanel();
 };

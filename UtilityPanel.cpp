@@ -2,6 +2,7 @@
 #include "CaptureWidget.h"
 #include <QWidget>
 #include <QToolButton>
+#include <QRect>
 
 UtilityPanel::UtilityPanel(CaptureWidget *parent)
         : QToolBar(parent)
@@ -41,4 +42,17 @@ UtilityPanel::UtilityPanel(CaptureWidget *parent)
 
     m_copy->setIcon(QIcon {QPixmap {":/Finish"}});
     addWidget(m_copy);
+}
+
+void UtilityPanel::safelyMove(QPointF point)
+{
+    QRectF parentRect {parentWidget()->rect()};
+
+    // 禁止越界
+    if (point.x() < 0) { point.setX(0); }
+    if (point.x() + width() > parentRect.right()) { point.setX(parentRect.right() - width()); }
+    if (point.y() < 0) { point.setY(0); }
+    if (point.y() + height() > parentRect.bottom()) { point.setY(parentRect.bottom() - height()); }
+
+    move(point.toPoint());
 }

@@ -8,6 +8,7 @@
 #include <QPainterPath>
 #include <QBrush>
 #include <print>
+#include <stdexcept>
 
 //void CaptureWidget::paintEvent(QPaintEvent *event)
 //{
@@ -155,8 +156,9 @@ void CaptureWidget::mouseReleaseEvent(QMouseEvent *event)
     if (m_state == Selecting) {
         m_utilityPanel = new UtilityPanel {this};
         m_utilityPanel->show();
-        m_utilityPanel->setFixedHeight(24);
-        m_utilityPanel->move(100, 100);
+        m_utilityPanel->setFixedHeight(28);
+
+        updatePosOfUtilityPanel();
         m_state = SelectionDone;
     }
 }
@@ -184,4 +186,15 @@ CaptureWidget::CaptureWidget(QPixmap &&background, QWidget *parent)
 {
     QCursor cursor {QPixmap {":/RedCursor"}, 0, 0};
     setCursor(cursor);
+}
+
+
+void CaptureWidget::updatePosOfUtilityPanel()
+{
+    if (m_utilityPanel) {
+        QPointF point {QRectF {m_selection->basicGeometry()}.bottomRight()}; // 选区右下角的坐标
+        point.ry() += 3; // 向下平移
+        point.rx() -= m_utilityPanel->width(); // 向左平移
+        m_utilityPanel->safelyMove(point);
+    } else throw std::logic_error {"m_utilityPanel has not been created yet!"};
 }

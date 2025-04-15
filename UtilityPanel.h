@@ -3,6 +3,7 @@
 #include <QWidget>
 #include <QToolBar>
 #include <QToolButton>
+#include <QPointF>
 
 class CaptureWidget; // forward declaration
 
@@ -19,5 +20,6 @@ class UtilityPanel : public QToolBar
 
 public:
     explicit UtilityPanel(CaptureWidget *parent);
+    void safelyMove(QPointF point);
 };
 
