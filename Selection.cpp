@@ -175,6 +175,8 @@ void Selection::paintEvent(QPaintEvent *event)
 
 void Selection::resizeEvent(QResizeEvent *event)
 {
+    Q_EMIT geometryChanged();
+
     // 调整basicSelection
     {
         int width {rect().width() - 2 * m_extension};
@@ -198,6 +200,11 @@ void Selection::resizeEvent(QResizeEvent *event)
         m_bottomLeftMargin->move(0, m_marginWidth + lorHeight);
         m_bottomRightMargin->move(m_marginWidth + tobWidth, m_marginWidth + lorHeight);
     }
+}
+
+void Selection::moveEvent(QMoveEvent *event)
+{
+    Q_EMIT geometryChanged();
 }
 
 void Selection::mousePressEvent(QMouseEvent *event)

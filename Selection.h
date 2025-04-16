@@ -10,6 +10,8 @@ class Selection; // forward declaration
 
 class SelectionSingleMargin : public QWidget
 {
+    Q_OBJECT
+
 public:
     enum class Type
     {
@@ -45,14 +47,15 @@ public:
 
 class Selection : public QWidget
 {
+    Q_OBJECT
+
 public:
     enum class Mode
     {
         NonPaintingMode, // 可移动、可resize、不可绘画
         PaintingMode, // 不可移动、不可resize、可绘画
     };
-    using
-    enum Mode;
+    using enum Mode;
 
     friend class SelectionSingleMargin;
 
@@ -69,9 +72,13 @@ private:
     QPoint m_lastEventPos; // 鼠标移动时，记录上次鼠标移动事件的位置(相对于父控件坐标系)
     QPoint m_virtualPointer; // 虚拟鼠标指针(相对于父控件坐标系)
 
+Q_SIGNALS:
+    void geometryChanged();
+
 protected:
     void paintEvent(QPaintEvent *event) override;
     void resizeEvent(QResizeEvent *event) override;
+    void moveEvent(QMoveEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
@@ -91,5 +98,5 @@ public:
     [[nodiscard]] int basicHeight() const;
 
     void moveBasic(QPoint point);
-    void moveBasic(int x,int y);
+    void moveBasic(int x, int y);
 };

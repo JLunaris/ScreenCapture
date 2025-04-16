@@ -4,6 +4,8 @@
 
 class BasicSelection : public QWidget
 {
+    Q_OBJECT
+
 protected:
     void paintEvent(QPaintEvent *event) override;
 

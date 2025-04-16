@@ -40,6 +40,8 @@
 
 class CaptureWidget : public QWidget
 {
+    Q_OBJECT
+
 public:
     enum class CaptureState
     {
@@ -57,6 +59,9 @@ private:
     CaptureState m_state {CaptureState::BeforeSelection}; // 执行状态
     QPointF m_origin; // 选区的起点
 
+private Q_SLOTS:
+    void updatePosOfUtilityPanel();
+
 protected:
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
@@ -65,5 +70,4 @@ protected:
 
 public:
     explicit CaptureWidget(QPixmap &&background, QWidget *parent = nullptr);
-    void updatePosOfUtilityPanel();
 };

@@ -9,6 +9,8 @@ class CaptureWidget; // forward declaration
 
 class UtilityPanel : public QToolBar
 {
+    Q_OBJECT
+
     QToolButton *m_rectangle {new QToolButton {this}};
     QToolButton *m_ellipse {new QToolButton {this}};
     QToolButton *m_horizontalLine {new QToolButton {this}};

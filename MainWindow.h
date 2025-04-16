@@ -7,6 +7,8 @@
 
 class MainWindow : public QMainWindow
 {
+    Q_OBJECT
+
     QPushButton *snipButton;
     QFrame *ctrlFrame;
     QFrame *pictureFrame;
