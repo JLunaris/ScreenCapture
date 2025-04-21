@@ -37,6 +37,7 @@ protected:
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
+
 public:
     SelectionSingleMargin(Selection *parent, Type type);
     [[nodiscard]] Selection *parentSelection() const;
@@ -99,4 +100,6 @@ public:
 
     void moveBasic(QPoint point);
     void moveBasic(int x, int y);
+
+    [[nodiscard]] BasicSelection *basicSelection() const;
 };

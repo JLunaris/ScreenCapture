@@ -3,12 +3,12 @@
 #include <QBrush>
 #include "Selection.h"
 
-BasicSelection::BasicSelection(Selection *parent)
-        : QGraphicsView(parent)
+void BasicSelection::setPaintingMode(BasicSelection::PaintingMode mode)
 {
-    setScene(nullptr);
-    setFrameShape(QFrame::Shape::NoFrame); // 关键：移除边框
-    viewport()->setAutoFillBackground(false); // 关键：将视口的autoFillBackground设为false
+    m_paintingMode = mode;
+    if (mode != PaintingMode::NonPainting) {
+        setCursor(QCursor {Qt::CursorShape::CrossCursor});
+    }
 }
 
 void BasicSelection::paintEvent(QPaintEvent *event)
@@ -25,7 +25,6 @@ void BasicSelection::mousePressEvent(QMouseEvent *event)
         event->ignore();
         break;
     }
-//    setPaintingMode(BasicSelection::PaintingMode::Rectangle);
 }
 
 void BasicSelection::mouseMoveEvent(QMouseEvent *event)
@@ -50,12 +49,12 @@ void BasicSelection::mouseReleaseEvent(QMouseEvent *event)
     }
 }
 
-void BasicSelection::setPaintingMode(BasicSelection::PaintingMode mode)
+BasicSelection::BasicSelection(Selection *parent)
+        : QGraphicsView(parent)
 {
-    m_paintingMode = mode;
-    if (mode != PaintingMode::NonPainting) {
-        setCursor(QCursor {Qt::CursorShape::CrossCursor});
-    }
+    setScene(nullptr);
+    setFrameShape(QFrame::Shape::NoFrame); // 关键：移除边框
+    viewport()->setAutoFillBackground(false); // 关键：将视口的autoFillBackground设为false
 }
 
 BasicSelection::PaintingMode BasicSelection::paintingMode() const

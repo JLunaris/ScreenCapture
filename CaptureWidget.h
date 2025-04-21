@@ -42,6 +42,8 @@ class CaptureWidget : public QWidget
 {
     Q_OBJECT
 
+    friend class UtilityPanel;
+
 public:
     enum class CaptureState
     {

@@ -22,6 +22,7 @@ class UtilityPanel : public QToolBar
 
 public:
     explicit UtilityPanel(CaptureWidget *parent);
+    [[nodiscard]] CaptureWidget *parentCaptureWidget() const;
     void safelyMove(QPointF point);
 };
 

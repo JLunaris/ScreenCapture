@@ -280,6 +280,16 @@ Selection::Mode Selection::mode() const
 void Selection::setMode(Selection::Mode mode)
 {
     m_mode = mode;
+    if (m_mode == Mode::PaintingMode) {
+        m_leftMargin->setActive(false);
+        m_rightMargin->setActive(false);
+        m_topMargin->setActive(false);
+        m_bottomMargin->setActive(false);
+        m_topLeftMargin->setActive(false);
+        m_topRightMargin->setActive(false);
+        m_bottomLeftMargin->setActive(false);
+        m_bottomRightMargin->setActive(false);
+    }
 }
 
 
@@ -338,4 +348,9 @@ void Selection::moveBasic(QPoint point)
 void Selection::moveBasic(int x, int y)
 {
     moveBasic(QPoint {x, y});
+}
+
+BasicSelection *Selection::basicSelection() const
+{
+    return m_basicSelection;
 }

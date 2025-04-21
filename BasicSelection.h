@@ -31,6 +31,6 @@ protected:
 
 public:
     explicit BasicSelection(Selection *parent = nullptr);
-    void setPaintingMode(PaintingMode mode);
     [[nodiscard]] PaintingMode paintingMode() const;
+    void setPaintingMode(BasicSelection::PaintingMode mode);
 };
