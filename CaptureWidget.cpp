@@ -179,6 +179,7 @@ void CaptureWidget::mouseReleaseEvent(QMouseEvent *event)
 void CaptureWidget::paintEvent(QPaintEvent *event)
 {
     QPainter painter {this};
+    painter.setRenderHint(QPainter::Antialiasing); // 关键：设定抗锯齿，否则改变选区尺寸或位置时会产生锯齿(需要仔细观察)
     painter.drawPixmap(rect(), m_background);
     if (m_selection) {
         QPainterPath overlayPath;
