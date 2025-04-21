@@ -8,7 +8,7 @@
         <file alias="Rectangle">SnippingToolUI/rectangle.png</file>
         <file alias="Ellipse">SnippingToolUI/ellipse.png</file>
         <file alias="Pencil">SnippingToolUI/pencil.png</file>
-        <file alias="HLine">SnippingToolUI/horizontal line.png</file>
+        <file alias="Line">SnippingToolUI/line.png</file>
         <file alias="Redo">SnippingToolUI/redo.png</file>
     </qresource>
 </RCC>

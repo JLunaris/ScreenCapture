@@ -25,8 +25,8 @@ UtilityPanel::UtilityPanel(CaptureWidget *parent)
     m_ellipse->setIcon(QIcon {QPixmap {":/Ellipse"}});
     addWidget(m_ellipse);
 
-    m_horizontalLine->setIcon(QIcon {QPixmap {":/HLine"}});
-    addWidget(m_horizontalLine);
+    m_line->setIcon(QIcon {QPixmap {":/Line"}});
+    addWidget(m_line);
 
     m_pencil->setIcon(QIcon {QPixmap {":/Pencil"}});
     addWidget(m_pencil);

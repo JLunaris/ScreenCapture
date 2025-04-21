@@ -13,7 +13,7 @@ class UtilityPanel : public QToolBar
 
     QToolButton *m_rectangle {new QToolButton {this}};
     QToolButton *m_ellipse {new QToolButton {this}};
-    QToolButton *m_horizontalLine {new QToolButton {this}};
+    QToolButton *m_line {new QToolButton {this}};
     QToolButton *m_pencil {new QToolButton {this}};
     QToolButton *m_redo {new QToolButton {this}};
     QToolButton *m_save {new QToolButton {this}};
