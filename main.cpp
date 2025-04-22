@@ -17,6 +17,7 @@ public:
         QGraphicsView *view {new QGraphicsView {scene, this}};
 
         view->resize(200, 200);
+        view->setRenderHint(QPainter::RenderHint::Antialiasing); // 关键：设置view渲染时抗锯齿
         view->setFrameShape(QFrame::NoFrame); // 关键：移除边框
         std::println("viewport: {}", view->viewport()->autoFillBackground());
         view->viewport()->setAutoFillBackground(false); // 关键：将视口的autoFillBackground设为false

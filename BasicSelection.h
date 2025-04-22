@@ -2,7 +2,7 @@
 
 #include <QGraphicsView>
 #include <QMouseEvent>
-#include <QAbstractScrollArea>
+#include <QGraphicsScene>
 
 class Selection;
 
@@ -21,10 +21,23 @@ public:
     };
 
 private:
+    enum class PaintingProcess
+    {
+        BeforePainting,
+        Painting,
+    };
+
+private:
+    QGraphicsScene *m_scene {nullptr};
+
     PaintingMode m_paintingMode {PaintingMode::NonPainting};
+    QColor m_penColor {Qt::red};
+    qreal m_penWidth {0};
+
+    PaintingProcess m_paintingProcess {PaintingProcess::BeforePainting}; // 绘画过程
+    QPointF m_originPoint; // 绘画的起点
 
 protected:
-    void paintEvent(QPaintEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
