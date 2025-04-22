@@ -26,12 +26,9 @@ void MainWindow::captureScreen()
     QPixmap pixmap {screen->grabWindow()};
 
     // show CaptureWidget in full screen
-//    QLabel *label {new QLabel {nullptr, Qt::FramelessWindowHint}};
-//    label->setPixmap(pixmap);
-//    label->showFullScreen();
-
     CaptureWidget *captureWindow {new CaptureWidget {std::move(pixmap)}};
     captureWindow->showFullScreen();
+//    captureWindow->show(); // 非全屏显示，用于debug
     connect(captureWindow, &CaptureWidget::backToMainWindow,
             this, [this, captureWindow]() {
                 delete captureWindow;

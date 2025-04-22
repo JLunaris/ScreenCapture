@@ -131,6 +131,7 @@ void BasicSelection::setPaintingMode(BasicSelection::PaintingMode mode)
     }
 
     m_paintingMode = mode;
+
     if (mode != PaintingMode::NonPainting) {
         setCursor(QCursor {Qt::CursorShape::CrossCursor});
     }

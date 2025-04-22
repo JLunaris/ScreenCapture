@@ -197,7 +197,9 @@ void CaptureWidget::paintEvent(QPaintEvent *event)
 CaptureWidget::CaptureWidget(QPixmap &&background)
         : m_background(std::move(background))
 {
-    setWindowFlag(Qt::FramelessWindowHint);
+    setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint); // 无边框 | 始终显示在顶部
+    setWindowTitle("截图工具");
+    setWindowIcon(QIcon {":/Icon"});
     QCursor cursor {QPixmap {":/RedCursor"}, 0, 0};
     setCursor(cursor);
 }
