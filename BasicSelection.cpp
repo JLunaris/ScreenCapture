@@ -4,6 +4,7 @@
 #include <QGraphicsRectItem>
 #include <QGraphicsEllipseItem>
 #include <QGraphicsLineItem>
+#include <QGraphicsPathItem>
 #include "Selection.h"
 #include <print>
 
@@ -12,7 +13,7 @@ void BasicSelection::removeItem() noexcept
     if (m_scene == nullptr)
         return;
 
-    if(!m_items.empty()){
+    if (!m_items.empty()) {
         m_scene->removeItem(m_items.top());
         delete m_items.top();
         m_items.pop();
@@ -86,6 +87,22 @@ void BasicSelection::mouseMoveEvent(QMouseEvent *event)
         }
         break;
     }
+    case Pencil: {
+        QPointF eventPos {event->position()};
+        if (m_paintingProcess == PaintingProcess::BeforePainting) {
+            m_paintingProcess = PaintingProcess::Painting;
+            m_painterPath = QPainterPath {m_originPoint}; // 重置 m_painterPath 以避免残留路径
+            auto *item {m_scene->addPath(m_painterPath, QPen {m_penColor, m_penWidth})};
+            m_items.push(item);
+            item->setFlag(QGraphicsItem::GraphicsItemFlag::ItemIsFocusable);
+            m_scene->setFocusItem(item);
+        } else {
+            m_painterPath.lineTo(eventPos);
+            static_cast<QGraphicsPathItem *>(m_scene->focusItem())->
+                    setPath(m_painterPath);
+        }
+        break;
+    }
     }
 }
 
@@ -100,6 +117,7 @@ void BasicSelection::mouseReleaseEvent(QMouseEvent *event)
     case Rectangle:
     case Ellipse:
     case Line:
+    case Pencil:
         m_paintingProcess = PaintingProcess::BeforePainting;
         break;
     }

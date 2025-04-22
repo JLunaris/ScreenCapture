@@ -4,6 +4,7 @@
 #include <QMouseEvent>
 #include <QGraphicsScene>
 #include <stack>
+#include <QPainterPath>
 
 class Selection;
 
@@ -34,10 +35,11 @@ private:
 
     PaintingMode m_paintingMode {PaintingMode::NonPainting};
     QColor m_penColor {Qt::red};
-    qreal m_penWidth {0};
+    qreal m_penWidth {2};
 
     PaintingProcess m_paintingProcess {PaintingProcess::BeforePainting}; // 绘画过程
     QPointF m_originPoint; // 绘画的起点
+    QPainterPath m_painterPath; // 仅用于画曲线，存储鼠标移动路径
 
 public Q_SLOTS:
     void removeItem() noexcept;
