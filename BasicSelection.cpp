@@ -7,6 +7,18 @@
 #include "Selection.h"
 #include <print>
 
+void BasicSelection::removeItem() noexcept
+{
+    if (m_scene == nullptr)
+        return;
+
+    if(!m_items.empty()){
+        m_scene->removeItem(m_items.top());
+        delete m_items.top();
+        m_items.pop();
+    }
+}
+
 void BasicSelection::mousePressEvent(QMouseEvent *event)
 {
     switch (m_paintingMode) {
@@ -37,6 +49,7 @@ void BasicSelection::mouseMoveEvent(QMouseEvent *event)
         if (m_paintingProcess == PaintingProcess::BeforePainting) {
             m_paintingProcess = PaintingProcess::Painting;
             auto *item {m_scene->addRect(QRectF {m_originPoint, eventPos}, QPen {m_penColor, m_penWidth})};
+            m_items.push(item);
             item->setFlag(QGraphicsItem::GraphicsItemFlag::ItemIsFocusable);
             m_scene->setFocusItem(item);
         } else {
@@ -50,6 +63,7 @@ void BasicSelection::mouseMoveEvent(QMouseEvent *event)
         if (m_paintingProcess == PaintingProcess::BeforePainting) {
             m_paintingProcess = PaintingProcess::Painting;
             auto *item {m_scene->addEllipse(QRectF {m_originPoint, eventPos}, QPen {m_penColor, m_penWidth})};
+            m_items.push(item);
             item->setFlag(QGraphicsItem::GraphicsItemFlag::ItemIsFocusable);
             m_scene->setFocusItem(item);
         } else {
@@ -63,11 +77,12 @@ void BasicSelection::mouseMoveEvent(QMouseEvent *event)
         if (m_paintingProcess == PaintingProcess::BeforePainting) {
             m_paintingProcess = PaintingProcess::Painting;
             auto *item {m_scene->addLine(QLineF {m_originPoint, eventPos}, QPen {m_penColor, m_penWidth})};
+            m_items.push(item);
             item->setFlag(QGraphicsItem::GraphicsItemFlag::ItemIsFocusable);
             m_scene->setFocusItem(item);
         } else {
             static_cast<QGraphicsLineItem *>(m_scene->focusItem())->
-                    setLine(QLineF{m_originPoint, eventPos});
+                    setLine(QLineF {m_originPoint, eventPos});
         }
         break;
     }

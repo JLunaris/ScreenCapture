@@ -3,6 +3,7 @@
 #include <QGraphicsView>
 #include <QMouseEvent>
 #include <QGraphicsScene>
+#include <stack>
 
 class Selection;
 
@@ -29,6 +30,7 @@ private:
 
 private:
     QGraphicsScene *m_scene {nullptr};
+    std::stack<QGraphicsItem *> m_items;
 
     PaintingMode m_paintingMode {PaintingMode::NonPainting};
     QColor m_penColor {Qt::red};
@@ -36,6 +38,9 @@ private:
 
     PaintingProcess m_paintingProcess {PaintingProcess::BeforePainting}; // 绘画过程
     QPointF m_originPoint; // 绘画的起点
+
+public Q_SLOTS:
+    void removeItem() noexcept;
 
 protected:
     void mousePressEvent(QMouseEvent *event) override;

@@ -90,6 +90,8 @@ UtilityPanel::UtilityPanel(CaptureWidget *parent)
 
         m_redo->setIcon(QIcon {QPixmap {":/Redo"}});
         addWidget(m_redo);
+        connect(m_redo, &QToolButton::clicked,
+                basicSelection, &BasicSelection::removeItem);
 
         m_save->setIcon(QIcon {QPixmap {":/Save"}});
         addWidget(m_save);
