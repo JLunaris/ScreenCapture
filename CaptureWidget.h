@@ -64,6 +64,9 @@ private:
 private Q_SLOTS:
     void updatePosOfUtilityPanel();
 
+Q_SIGNALS:
+    void backToMainWindow();
+
 protected:
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
@@ -71,5 +74,5 @@ protected:
     void paintEvent(QPaintEvent *event) override;
 
 public:
-    explicit CaptureWidget(QPixmap &&background, QWidget *parent = nullptr);
+    explicit CaptureWidget(QPixmap &&background);
 };

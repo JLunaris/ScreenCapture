@@ -32,14 +32,19 @@ void MainWindow::captureScreen()
 
     CaptureWidget *captureWindow {new CaptureWidget {std::move(pixmap)}};
     captureWindow->showFullScreen();
+    connect(captureWindow, &CaptureWidget::backToMainWindow,
+            this, [this, captureWindow]() {
+                delete captureWindow;
+                show();
+            });
 }
 
 
 void MainWindow::resizeEvent(QResizeEvent *event)
 {
     QMainWindow::resizeEvent(event);
-    ctrlFrame->setGeometry(0, 0, centralWidget()->width(), 50);
-    pictureFrame->setGeometry(0, 50, centralWidget()->width(), centralWidget()->height() - 50);
+    m_ctrlFrame->setGeometry(0, 0, centralWidget()->width(), 50);
+    m_pictureFrame->setGeometry(0, 50, centralWidget()->width(), centralWidget()->height() - 50);
 }
 
 
@@ -68,25 +73,25 @@ MainWindow::MainWindow(QWidget *parent)
 
     // CentralWidget
     [this] {
-        // ctrlFrame
+        // m_ctrlFrame
         [this] {
-            ctrlFrame = new QFrame {this->centralWidget()};
+            m_ctrlFrame = new QFrame {this->centralWidget()};
 
             // setPalette
             [this] {
                 QPalette framePalette;
                 framePalette.setColor(QPalette::Active, QPalette::Window, QColor {238, 244, 249});
                 framePalette.setColor(QPalette::Inactive, QPalette::Window, QColor {243, 243, 243});
-                ctrlFrame->setPalette(framePalette);
-                ctrlFrame->setAutoFillBackground(true);
+                m_ctrlFrame->setPalette(framePalette);
+                m_ctrlFrame->setAutoFillBackground(true);
             }();
 
             // hBoxLayout
             [this] {
-                QHBoxLayout *hBoxLayout {new QHBoxLayout {ctrlFrame}};
-                snipButton = new QPushButton {"创建截图"};
-                hBoxLayout->addWidget(snipButton, 1);
-                snipButton->setStyleSheet(R"(
+                QHBoxLayout *hBoxLayout {new QHBoxLayout {m_ctrlFrame}};
+                m_snipButton = new QPushButton {"创建截图"};
+                hBoxLayout->addWidget(m_snipButton, 1);
+                m_snipButton->setStyleSheet(R"(
                     QPushButton {
                             background-color: white;
                             border: 1px solid rgb(220, 225, 229);
@@ -105,13 +110,13 @@ MainWindow::MainWindow(QWidget *parent)
                             border: 1px solid rgb(200, 200, 200);
                         }
                 )");
-                snipButton->setFont(QFont {"微软雅黑"});
+                m_snipButton->setFont(QFont {"微软雅黑"});
             }();
         }();
 
-        pictureFrame = new QFrame {this->centralWidget()};
-//        pictureFrame->setFrameStyle(QFrame::Shape::Box);
+        m_pictureFrame = new QFrame {this->centralWidget()};
+//        m_pictureFrame->setFrameStyle(QFrame::Shape::Box);
     }();
 
-    connect(snipButton, &QPushButton::clicked, this, &MainWindow::captureScreen);
+    connect(m_snipButton, &QPushButton::clicked, this, &MainWindow::captureScreen);
 }

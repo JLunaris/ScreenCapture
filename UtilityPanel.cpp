@@ -98,6 +98,8 @@ UtilityPanel::UtilityPanel(CaptureWidget *parent)
 
         m_close->setIcon(QIcon {QPixmap {":/Close"}});
         addWidget(m_close);
+        connect(m_close, &QToolButton::clicked,
+                parent, &CaptureWidget::backToMainWindow);
 
         m_copy->setIcon(QIcon {QPixmap {":/Finish"}});
         addWidget(m_copy);

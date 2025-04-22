@@ -9,11 +9,11 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
-    QPushButton *snipButton;
-    QFrame *ctrlFrame;
-    QFrame *pictureFrame;
+    QPushButton *m_snipButton;
+    QFrame *m_ctrlFrame;
+    QFrame *m_pictureFrame;
 
-private:
+private Q_SLOTS:
     void captureScreen();
 
 protected:

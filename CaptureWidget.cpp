@@ -194,9 +194,10 @@ void CaptureWidget::paintEvent(QPaintEvent *event)
 }
 
 
-CaptureWidget::CaptureWidget(QPixmap &&background, QWidget *parent)
-        : m_background(std::move(background)), QWidget(parent, Qt::FramelessWindowHint)
+CaptureWidget::CaptureWidget(QPixmap &&background)
+        : m_background(std::move(background))
 {
+    setWindowFlag(Qt::FramelessWindowHint);
     QCursor cursor {QPixmap {":/RedCursor"}, 0, 0};
     setCursor(cursor);
 }
