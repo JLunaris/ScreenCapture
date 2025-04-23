@@ -9,6 +9,8 @@
 #include <QBrush>
 #include <print>
 #include <stdexcept>
+#include <QClipboard>
+#include <QDebug>
 
 //void CaptureWidget::paintEvent(QPaintEvent *event)
 //{
@@ -138,6 +140,36 @@ void CaptureWidget::updatePosOfUtilityPanel()
         point.rx() -= m_utilityPanel->width(); // 向左平移
         m_utilityPanel->safelyMove(point);
     } else throw std::logic_error {"m_utilityPanel has not been created yet!"};
+}
+
+
+void CaptureWidget::renderCaptureImage()
+{
+    // 获取屏幕的设备像素比(DPR)
+    QScreen *screen {QGuiApplication::primaryScreen()};
+    qreal ratio {screen->devicePixelRatio()};
+
+    // 将像素比作为缩放因子
+    QTransform transform;
+    transform.scale(ratio, ratio); // 缩放率: ratio
+
+    // 获取选区部分的截图
+    m_captureImage = m_background.copy(transform.mapRect(m_selection->basicGeometry())).toImage();
+
+    // 渲染涂鸦部分
+    QPainter painter {&m_captureImage};
+    m_selection->basicSelection()->render(&painter, m_captureImage.rect(),
+                                          transform.mapRect(m_selection->basicSelection()->rect()));
+}
+
+
+void CaptureWidget::copyImageToClipboard() const
+{
+    if (m_captureImage.isNull())
+        return;
+
+    QClipboard *clipboard {QGuiApplication::clipboard()};
+    clipboard->setImage(m_captureImage);
 }
 
 

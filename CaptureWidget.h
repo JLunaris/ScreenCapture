@@ -7,6 +7,7 @@
 #include <QPoint>
 #include <QPointF>
 #include "UtilityPanel.h"
+#include <QImage>
 
 //class CaptureWidget : public QWidget
 //{
@@ -57,12 +58,17 @@ private:
     QPixmap m_background;
     Selection *m_selection {nullptr};
     UtilityPanel *m_utilityPanel {nullptr};
+    QImage m_captureImage;
 
     CaptureState m_state {CaptureState::BeforeSelection}; // 执行状态
     QPointF m_origin; // 选区的起点
 
 private Q_SLOTS:
     void updatePosOfUtilityPanel();
+
+public Q_SLOTS:
+    void renderCaptureImage();
+    void copyImageToClipboard() const;
 
 Q_SIGNALS:
     void backToMainWindow();

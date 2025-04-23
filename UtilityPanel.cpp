@@ -103,6 +103,12 @@ UtilityPanel::UtilityPanel(CaptureWidget *parent)
 
         m_copy->setIcon(QIcon {QPixmap {":/Finish"}});
         addWidget(m_copy);
+        connect(m_copy, &QToolButton::clicked,
+                parent, &CaptureWidget::renderCaptureImage);
+        connect(m_copy, &QToolButton::clicked,
+                parent, &CaptureWidget::copyImageToClipboard);
+        connect(m_copy, &QToolButton::clicked,
+                parent, &CaptureWidget::backToMainWindow);
     }
 }
 
