@@ -158,6 +158,7 @@ void CaptureWidget::renderCaptureImage()
 
     // 渲染涂鸦部分
     QPainter painter {&m_captureImage};
+    painter.setRenderHint(QPainter::Antialiasing);
     m_selection->basicSelection()->render(&painter, m_captureImage.rect(),
                                           transform.mapRect(m_selection->basicSelection()->rect()));
 }
