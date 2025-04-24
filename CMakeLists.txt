@@ -33,6 +33,10 @@ target_link_libraries(SnippingTool
         Qt::Widgets
 )
 
+if(CMAKE_BUILD_TYPE STREQUAL "Release" AND CMAKE_SYSTEM_NAME STREQUAL "Windows")
+    set_property(TARGET SnippingTool PROPERTY WIN32_EXECUTABLE true)
+endif()
+
 if (WIN32 AND NOT DEFINED CMAKE_TOOLCHAIN_FILE)
     set(DEBUG_SUFFIX)
     if (MSVC AND CMAKE_BUILD_TYPE MATCHES "Debug")

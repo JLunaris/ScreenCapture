@@ -144,8 +144,8 @@ bool SelectionSingleMargin::active() const
 
 void Selection::paintEvent(QPaintEvent *event)
 {
-    std::println("宽度和高度：({}, {})  位置：({}, {})", basicWidth(), basicHeight(), basicGeometry().x(),
-                 basicGeometry().y());
+//    std::println("宽度和高度：({}, {})  位置：({}, {})", basicWidth(), basicHeight(), basicGeometry().x(),
+//                 basicGeometry().y());
 
     QPainter painter {this};
     QPen pen {m_frameColor};
