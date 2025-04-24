@@ -95,6 +95,10 @@ UtilityPanel::UtilityPanel(CaptureWidget *parent)
 
         m_save->setIcon(QIcon {QPixmap {":/Save"}});
         addWidget(m_save);
+        connect(m_save, &QToolButton::clicked,
+                parent, &CaptureWidget::renderCaptureImage);
+        connect(m_save, &QToolButton::clicked,
+                parent, &CaptureWidget::saveImageToUserPath);
 
         m_close->setIcon(QIcon {QPixmap {":/Close"}});
         addWidget(m_close);

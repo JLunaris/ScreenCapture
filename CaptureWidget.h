@@ -69,6 +69,7 @@ private Q_SLOTS:
 public Q_SLOTS:
     void renderCaptureImage();
     void copyImageToClipboard() const;
+    void saveImageToUserPath();
 
 Q_SIGNALS:
     void backToMainWindow();

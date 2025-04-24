@@ -11,6 +11,9 @@
 #include <stdexcept>
 #include <QClipboard>
 #include <QDebug>
+#include <QStandardPaths>
+#include <QFileDialog>
+#include <QDateTime>
 
 //void CaptureWidget::paintEvent(QPaintEvent *event)
 //{
@@ -171,6 +174,42 @@ void CaptureWidget::copyImageToClipboard() const
 
     QClipboard *clipboard {QGuiApplication::clipboard()};
     clipboard->setImage(m_captureImage);
+}
+
+
+void CaptureWidget::saveImageToUserPath()
+{
+    if (m_captureImage.isNull())
+        return;
+
+    // 设置保存的默认路径和默认文件名
+    QString defaultPath {QStandardPaths::writableLocation(QStandardPaths::DesktopLocation)};
+    QString defaultName {QDateTime::currentDateTime().toString("yyyy-M-d h-m-s")};
+
+    // 弹出保存对话框，获取文件名
+    QString filename {QFileDialog::getSaveFileName(nullptr,
+                                                   "另存为",
+                                                   defaultPath + "/" + defaultName,
+                                                   "PNG (*.png);;BMP (*.bmp);;JPG (*.jpg;*.jpeg)")};
+
+    // 用于取消操作
+    if (filename.isEmpty())
+        return;
+
+    // 确定保存格式
+    QString format;
+    if (filename.endsWith(".png"))
+        format = "PNG";
+    else if (filename.endsWith(".bmp"))
+        format = "BMP";
+    else if (filename.endsWith(".jpg") or filename.endsWith(".jpeg"))
+        format = "JPEG";
+
+    // 保存
+    m_captureImage.save(filename, format.toStdString().c_str());
+
+    // 退出
+    Q_EMIT backToMainWindow();
 }
 
 
