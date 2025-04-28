@@ -1,10 +1,12 @@
 #pragma once
 
+#include "BasicSelection.h"
+
 #include <QWidget>
 #include <QRect>
 #include <QCursor>
 #include <QPoint>
-#include "BasicSelection.h"
+
 
 class Selection; // forward declaration
 

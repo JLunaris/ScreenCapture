@@ -1,9 +1,10 @@
-#include <QApplication>
 #include "MainWindow.h"
-#include <print>
+
+#include <QApplication>
 #include <QGraphicsScene>
 #include <QGraphicsView>
 #include <QGraphicsRectItem>
+#include <print>
 
 class TestMainWindow : public QMainWindow
 {

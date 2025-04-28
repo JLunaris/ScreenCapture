@@ -1,12 +1,13 @@
 #pragma once
 
+#include "Selection.h"
+#include "UtilityPanel.h"
+
 #include <QWidget>
 #include <QPixmap>
 #include <QRect>
-#include "Selection.h"
 #include <QPoint>
 #include <QPointF>
-#include "UtilityPanel.h"
 #include <QImage>
 
 //class CaptureWidget : public QWidget

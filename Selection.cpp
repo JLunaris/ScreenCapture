@@ -1,4 +1,5 @@
 #include "Selection.h"
+
 #include <QPaintEvent>
 #include <QPainter>
 #include <QPen>
@@ -14,8 +15,7 @@ void SelectionSingleMargin::mousePressEvent(QMouseEvent *event)
     m_lastEventPos = mapTo(parentWidget()->parentWidget(), event->pos());
     const QRect &basicGeometry {parentSelection()->basicGeometry()};
     switch (m_type) {
-        using
-        enum Type;
+        using enum Type;
     case left:
     case top:
     case topLeft:
@@ -47,8 +47,7 @@ void SelectionSingleMargin::mouseMoveEvent(QMouseEvent *event)
     const QPoint eventPosInGrandparent {mapTo(parentWidget()->parentWidget(), event->pos())};
 
     switch (m_type) {
-        using
-        enum Type;
+        using enum Type;
     case left:
     case right: {
         int deltaX {eventPosInGrandparent.x() - m_lastEventPos.x()};
@@ -78,7 +77,10 @@ void SelectionSingleMargin::mouseMoveEvent(QMouseEvent *event)
     m_lastEventPos = eventPosInGrandparent;
 }
 
-void SelectionSingleMargin::mouseReleaseEvent(QMouseEvent *event) {}
+void SelectionSingleMargin::mouseReleaseEvent(QMouseEvent *event)
+{
+
+}
 
 SelectionSingleMargin::SelectionSingleMargin(Selection *parent, Type type)
         : QWidget(parent), m_type {type}
@@ -90,8 +92,7 @@ SelectionSingleMargin::SelectionSingleMargin(Selection *parent, Type type)
     int tobWidth {parentWidth - 2 * marginWidth}; // top or bottom marginWidget's width
 
     switch (type) {
-        using
-        enum Type;
+        using enum Type;
     case left:
         setGeometry(QRect {0, marginWidth, marginWidth, lorHeight});
         setCursor(QCursor {Qt::SizeHorCursor});
@@ -144,9 +145,6 @@ bool SelectionSingleMargin::active() const
 
 void Selection::paintEvent(QPaintEvent *event)
 {
-//    std::println("宽度和高度：({}, {})  位置：({}, {})", basicWidth(), basicHeight(), basicGeometry().x(),
-//                 basicGeometry().y());
-
     QPainter painter {this};
     QPen pen {m_frameColor};
 
@@ -200,11 +198,21 @@ void Selection::resizeEvent(QResizeEvent *event)
         m_bottomLeftMargin->move(0, m_marginWidth + lorHeight);
         m_bottomRightMargin->move(m_marginWidth + tobWidth, m_marginWidth + lorHeight);
     }
+
+#ifndef NDEBUG
+    std::println("选区位置 ({}, {})\t选区大小 ({}, {})",
+                 basicGeometry().x(), basicGeometry().y(), basicWidth(), basicHeight());
+#endif
 }
 
 void Selection::moveEvent(QMoveEvent *event)
 {
     Q_EMIT geometryChanged();
+
+#ifndef NDEBUG
+    std::println("选区位置 ({}, {})\t选区大小 ({}, {})",
+                 basicGeometry().x(), basicGeometry().y(), basicWidth(), basicHeight());
+#endif
 }
 
 void Selection::mousePressEvent(QMouseEvent *event)
@@ -253,8 +261,7 @@ Selection::Selection(QWidget *parent)
         int lorHeight {height() - 2 * m_marginWidth}; // left or right marginWidget's height
         int tobWidth {width() - 2 * m_marginWidth}; // top or bottom marginWidget's width
 
-        using
-        enum SelectionSingleMargin::Type;
+        using enum SelectionSingleMargin::Type;
 
         m_leftMargin = new SelectionSingleMargin {this, left};
         m_rightMargin = new SelectionSingleMargin {this, right};
@@ -276,7 +283,6 @@ Selection::Mode Selection::mode() const
     return m_mode;
 }
 
-
 void Selection::setMode(Selection::Mode mode)
 {
     m_mode = mode;
@@ -292,12 +298,10 @@ void Selection::setMode(Selection::Mode mode)
     }
 }
 
-
 QRect Selection::basicGeometry() const
 {
     return geometry().adjusted(m_extension, m_extension, -m_extension, -m_extension);
 }
-
 
 void Selection::setBasicGeometry(QRect rect)
 {
@@ -311,12 +315,10 @@ void Selection::setBasicGeometry(QRect rect)
     setGeometry(rect.adjusted(-m_extension, -m_extension, m_extension, m_extension));
 }
 
-
 void Selection::setBasicGeometry(int x, int y, int w, int h)
 {
     setBasicGeometry(QRect {x, y, w, h});
 }
-
 
 QRect Selection::basicRect() const
 {

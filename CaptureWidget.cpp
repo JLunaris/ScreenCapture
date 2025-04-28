@@ -1,4 +1,5 @@
 #include "CaptureWidget.h"
+
 #include <QPainter>
 #include <QMouseEvent>
 #include <QPaintEvent>
@@ -7,10 +8,8 @@
 #include <QApplication>
 #include <QPainterPath>
 #include <QBrush>
-#include <print>
 #include <stdexcept>
 #include <QClipboard>
-#include <QDebug>
 #include <QStandardPaths>
 #include <QFileDialog>
 #include <QDateTime>
@@ -145,7 +144,6 @@ void CaptureWidget::updatePosOfUtilityPanel()
     } else throw std::logic_error {"m_utilityPanel has not been created yet!"};
 }
 
-
 void CaptureWidget::renderCaptureImage()
 {
     // 获取屏幕的设备像素比(DPR)
@@ -166,7 +164,6 @@ void CaptureWidget::renderCaptureImage()
                                           transform.mapRect(m_selection->basicSelection()->rect()));
 }
 
-
 void CaptureWidget::copyImageToClipboard() const
 {
     if (m_captureImage.isNull())
@@ -175,7 +172,6 @@ void CaptureWidget::copyImageToClipboard() const
     QClipboard *clipboard {QGuiApplication::clipboard()};
     clipboard->setImage(m_captureImage);
 }
-
 
 void CaptureWidget::saveImageToUserPath()
 {
@@ -212,7 +208,6 @@ void CaptureWidget::saveImageToUserPath()
     Q_EMIT backToMainWindow();
 }
 
-
 void CaptureWidget::mousePressEvent(QMouseEvent *event)
 {
     if (m_state == BeforeSelection) {
@@ -225,7 +220,6 @@ void CaptureWidget::mousePressEvent(QMouseEvent *event)
     }
 }
 
-
 void CaptureWidget::mouseMoveEvent(QMouseEvent *event)
 {
     QPointF eventPos {event->position()};
@@ -233,7 +227,6 @@ void CaptureWidget::mouseMoveEvent(QMouseEvent *event)
         m_selection->setBasicGeometry(QRectF {m_origin, eventPos}.normalized().toRect());
     }
 }
-
 
 void CaptureWidget::mouseReleaseEvent(QMouseEvent *event)
 {
@@ -246,7 +239,6 @@ void CaptureWidget::mouseReleaseEvent(QMouseEvent *event)
         m_state = SelectionDone;
     }
 }
-
 
 void CaptureWidget::paintEvent(QPaintEvent *event)
 {
@@ -264,7 +256,6 @@ void CaptureWidget::paintEvent(QPaintEvent *event)
         painter.fillPath(overlayPath, QBrush {QColor {0, 0, 0, 80}});
     }
 }
-
 
 CaptureWidget::CaptureWidget(QPixmap &&background)
         : m_background(std::move(background))

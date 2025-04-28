@@ -1,12 +1,12 @@
 #include "BasicSelection.h"
+#include "Selection.h"
+
 #include <QPainter>
 #include <QBrush>
 #include <QGraphicsRectItem>
 #include <QGraphicsEllipseItem>
 #include <QGraphicsLineItem>
 #include <QGraphicsPathItem>
-#include "Selection.h"
-#include <print>
 
 void BasicSelection::removeItem() noexcept
 {
@@ -23,8 +23,7 @@ void BasicSelection::removeItem() noexcept
 void BasicSelection::mousePressEvent(QMouseEvent *event)
 {
     switch (m_paintingMode) {
-        using
-        enum PaintingMode;
+        using enum PaintingMode;
     case NonPainting:
         event->ignore();
         break;
@@ -40,8 +39,7 @@ void BasicSelection::mousePressEvent(QMouseEvent *event)
 void BasicSelection::mouseMoveEvent(QMouseEvent *event)
 {
     switch (m_paintingMode) {
-        using
-        enum PaintingMode;
+        using enum PaintingMode;
     case NonPainting:
         event->ignore();
         break;
@@ -109,8 +107,7 @@ void BasicSelection::mouseMoveEvent(QMouseEvent *event)
 void BasicSelection::mouseReleaseEvent(QMouseEvent *event)
 {
     switch (m_paintingMode) {
-        using
-        enum PaintingMode;
+        using enum PaintingMode;
     case NonPainting:
         event->ignore();
         break;

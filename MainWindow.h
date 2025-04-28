@@ -2,7 +2,7 @@
 
 #include <QMainWindow>
 #include <QVBoxLayout>
-#include <QLabel>
+#include <QFrame>
 #include <QPushButton>
 
 class MainWindow : public QMainWindow

@@ -1,5 +1,6 @@
 #include "UtilityPanel.h"
 #include "CaptureWidget.h"
+
 #include <QWidget>
 #include <QToolButton>
 #include <QRect>

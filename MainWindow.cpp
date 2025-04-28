@@ -19,7 +19,7 @@ void MainWindow::captureScreen()
     // hide MainWindow
     hide();
     using namespace std::chrono_literals;
-    QThread::sleep(150ms);
+    QThread::sleep(200ms);
 
     // grab window
     QScreen *screen {QGuiApplication::primaryScreen()};
@@ -112,7 +112,6 @@ MainWindow::MainWindow(QWidget *parent)
         }();
 
         m_pictureFrame = new QFrame {this->centralWidget()};
-//        m_pictureFrame->setFrameStyle(QFrame::Shape::Box);
     }();
 
     connect(m_snipButton, &QPushButton::clicked, this, &MainWindow::captureScreen);
