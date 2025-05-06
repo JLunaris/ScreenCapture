@@ -156,12 +156,12 @@ void CaptureWidget::renderCaptureImage()
 
     // 获取选区部分的截图
     m_captureImage = m_background.copy(transform.mapRect(m_selection->basicGeometry())).toImage();
+    m_captureImage.setDevicePixelRatio(1);
 
     // 渲染涂鸦部分
     QPainter painter {&m_captureImage};
     painter.setRenderHint(QPainter::Antialiasing);
-    m_selection->basicSelection()->render(&painter, m_captureImage.rect(),
-                                          transform.mapRect(m_selection->basicSelection()->rect()));
+    m_selection->basicSelection()->render(&painter);
 }
 
 void CaptureWidget::copyImageToClipboard() const
