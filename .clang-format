@@ -1,0 +1,79 @@
+BasedOnStyle: LLVM
+AccessModifierOffset: -4
+AlignAfterOpenBracket: Align
+AlignConsecutiveAssignments: None
+AlignOperands: Align
+AlignTrailingComments: # 是否对齐尾置注释
+  Kind: Leave # Always:总是对齐  Never:不对齐,但应用其他格式器(如SpacesBeforeTrailingComments)  Leave:尾置注释前的空格,有几个都行,不动它
+AllowAllArgumentsOnNextLine: false
+AllowAllConstructorInitializersOnNextLine: false
+AllowAllParametersOfDeclarationOnNextLine: false
+AllowShortBlocksOnASingleLine: Always
+AllowShortCaseLabelsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: All
+AllowShortIfStatementsOnASingleLine: Always
+AllowShortLambdasOnASingleLine: All
+AllowShortLoopsOnASingleLine: true
+AlwaysBreakAfterReturnType: None
+AlwaysBreakTemplateDeclarations: No
+BreakBeforeBraces: Custom
+BraceWrapping:
+  AfterCaseLabel: false
+  AfterClass: true
+  AfterControlStatement: Never
+  AfterEnum: true
+  AfterFunction: true
+  AfterNamespace: false
+  AfterUnion: true
+  BeforeCatch: false
+  BeforeElse: false
+  IndentBraces: false
+  SplitEmptyFunction: false
+  SplitEmptyRecord: true
+BreakBeforeBinaryOperators: None
+BreakBeforeTernaryOperators: true
+BreakConstructorInitializers: BeforeColon
+BreakInheritanceList: BeforeColon
+ColumnLimit: 0
+CompactNamespaces: false
+ConstructorInitializerIndentWidth: 8 # 构造函数初始化器缩进宽度
+ContinuationIndentWidth: 8
+EmptyLineBeforeAccessModifier: LogicalBlock # 访问说明符前是否空行
+IncludeBlocks: Regroup # include指令块的分组与排序
+IndentCaseLabels: false
+IndentPPDirectives: None
+IndentWidth: 4
+InsertNewlineAtEOF: true # 在文件末尾插入1个空行
+KeepEmptyLines: # 是否保留空行
+  AtEndOfFile: false
+  AtStartOfBlock: true
+  AtStartOfFile: false
+MaxEmptyLinesToKeep: 2 # 最多连续空几行
+NamespaceIndentation: All
+ObjCSpaceAfterProperty: false
+ObjCSpaceBeforeProtocolList: true
+PackConstructorInitializers: NextLineOnly # 构造函数初始化器如何放置
+PointerAlignment: Right
+ReflowComments: true
+SeparateDefinitionBlocks: Always # 定义块之间插入1个空行(包括class/struct/enum/function)
+SpaceAfterCStyleCast: true
+SpaceAfterLogicalNot: false
+SpaceAfterTemplateKeyword: false
+SpaceBeforeAssignmentOperators: true
+SpaceBeforeCpp11BracedList: true
+SpaceBeforeCtorInitializerColon: true
+SpaceBeforeInheritanceColon: true
+SpaceBeforeParens: ControlStatements
+SpaceBeforeRangeBasedForLoopColon: false
+SpaceInEmptyParentheses: false
+SpacesBeforeTrailingComments: 1 # 尾置注释前留几个空格
+SpacesInAngles: false
+SpacesInCStyleCastParentheses: false
+SpacesInContainerLiterals: false
+SpacesInLineCommentPrefix:
+  Minimum: 1
+  Maximum: -1
+SpacesInParentheses: false
+SpacesInSquareBrackets: false
+TabWidth: 4
+UseTab: Never
